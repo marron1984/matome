@@ -4,6 +4,13 @@ name: 購読ブログの更新（実在確認つき）
 # フィードとして読めたブログだけを config/sources.json に追加してコミットする。
 # 既存ブログの生死も verify で確認するが、削除はしない（ログ報告のみ）。
 on:
+  # このワークフロー自身か候補リストが更新されたら実行する。
+  # （実行環境の都合で workflow_dispatch を叩けない場合があるため push でも起動）
+  push:
+    branches: ['claude/matome-site-aggregator-t9amyi']
+    paths:
+      - 'config/candidates/**'
+      - '.github/workflows/update-sources.yml'
   workflow_dispatch:
     inputs:
       candidates:
@@ -28,7 +35,7 @@ jobs:
         run: node src/cli.js verify || true
 
       - name: 候補を試し、読めたものだけ追加
-        run: node src/cli.js add --list "${{ github.event.inputs.candidates }}"
+        run: node src/cli.js add --list "${{ github.event.inputs.candidates || 'config/candidates/sakamichi.json' }}"
 
       - name: 設定が壊れていないか確認
         run: |
