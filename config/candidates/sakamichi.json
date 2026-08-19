@@ -49,6 +49,38 @@
       "urls": [
         "https://sakamichi-m.blog.jp/"
       ]
+    },
+    {
+      "name": "坂道情報通～乃木坂46まとめ～",
+      "urls": [
+        "https://sakamichijyoho46.blog.jp/"
+      ]
+    },
+    {
+      "name": "坂道まとめ速報",
+      "urls": [
+        "https://keyakizaka1.blog.jp/"
+      ]
+    },
+    {
+      "name": "乃木坂まとめ（動画）",
+      "urls": [
+        "https://nogizaka46aidoru.livedoor.blog/"
+      ]
+    },
+    {
+      "name": "乃木坂LIFE 乃木坂46高速まとめ",
+      "urls": [
+        "https://nogizakalife.tokyo/"
+      ]
+    },
+    {
+      "name": "乃木通（URL推測）",
+      "urls": [
+        "https://nogitsuu.blog.jp/",
+        "http://blog.livedoor.jp/nogitsuu/",
+        "https://nogitu.blog.jp/"
+      ]
     }
   ]
 }
