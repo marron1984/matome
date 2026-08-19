@@ -115,6 +115,13 @@ node src/cli.js add --list config/candidates/sakamichi.json             # 読め
 - 既に登録済みのブログは二重に追加されません。何度実行しても安全です。
 - 候補ファイルは自分で作れます。形式は `{ "category": "坂道", "candidates": [{ "name": "...", "urls": ["..."] }] }` です。
 
+### GitHub Actions で追加する（手元にネットワークが無いとき）
+
+`.github/workflows/update-sources.yml` が、Actionsランナー上で同じ実在確認を実行します。
+候補リスト（`config/candidates/`）かワークフロー自体を変更してプッシュすると起動し、
+読めたブログだけを `config/sources.json` にコミットして返します。既存ブログの生死も
+ログに報告します（自動削除はしません）。Actionsタブから手動実行（workflow_dispatch）もできます。
+
 ### 直接編集する
 
 `config/sources.json` を編集しても構いません。RSS 2.0 / RSS 1.0(RDF) / Atom のいずれにも対応しています。
