@@ -81,6 +81,38 @@
       "feed": "http://blog.esuteru.com/index.rdf",
       "weight": 0.8,
       "enabled": true
+    },
+    {
+      "id": "keyakittenani-blog",
+      "name": "欅って、何？-欅坂46まとめ",
+      "category": "坂道",
+      "site": "https://keyakittenani.blog.jp/",
+      "feed": "https://keyakittenani.blog.jp/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "hiraganakeyaki-blog",
+      "name": "日向坂46まとめ速報",
+      "category": "坂道",
+      "site": "https://hiraganakeyaki.blog.jp/",
+      "feed": "https://hiraganakeyaki.blog.jp/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "hinatazaka46matome-blog",
+      "name": "日向坂46まとめたいよう",
+      "category": "坂道",
+      "site": "https://hinatazaka46matome.blog.jp/",
+      "feed": "https://hinatazaka46matome.blog.jp/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "sakamichi-m-blog",
+      "name": "坂道まとめ研究所",
+      "category": "坂道",
+      "site": "https://sakamichi-m.blog.jp/",
+      "feed": "https://sakamichi-m.blog.jp/index.rdf",
+      "weight": 1
     }
   ]
 }
