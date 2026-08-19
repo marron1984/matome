@@ -1,74 +1,53 @@
 {
-  "$comment": "坂道グループ（乃木坂46・日向坂46など）のまとめブログ候補。`node src/cli.js add --list config/candidates/sakamichi.json` で、実際にフィードが読めたものだけが購読に追加される。urls は移転前後などの候補で、先に読めたものが採用される。 登録名はフィード自身のタイトルが使われる。",
+  "$comment": "坂道グループ（乃木坂46・日向坂46・欅坂/櫻坂46）のまとめブログ候補。`node src/cli.js add --list config/candidates/sakamichi.json` で、実際にフィードが読めたものだけが購読に追加される。urls は移転前後などの候補で先に読めたものを採用。登録名はフィード自身のタイトルが使われる。登録済みのものは再実行してもスキップされる。",
   "category": "坂道",
   "candidates": [
     {
-      "name": "乃木坂46まとめ 1/46",
+      "name": "乃木坂46まとめ 乃木りんく",
       "urls": [
-        "http://blog.livedoor.jp/nogizaka46_128/",
-        "https://nogizaka46_128.blog.jp/"
+        "https://nogizaka46link.blog.jp/"
       ]
     },
     {
-      "name": "乃木坂46速報",
+      "name": "乃木坂46まとめもり～",
       "urls": [
-        "http://nogisoku.com/",
-        "https://nogisoku.com/"
+        "https://46room.blog.jp/"
       ]
     },
     {
-      "name": "乃木坂46まとめたいよ〜",
+      "name": "乃木坂46なブログ",
       "urls": [
-        "http://blog.livedoor.jp/nogizaka46matome/",
-        "https://nogizaka46matome.blog.jp/"
+        "https://ngz46.livedoor.blog/"
       ]
     },
     {
-      "name": "乃木坂46まとめ ラジオの時間",
+      "name": "乃木坂ってそこ！？～まとめブログ～",
       "urls": [
-        "http://blog.livedoor.jp/nogizakalove/",
-        "https://nogizakalove.blog.jp/"
+        "http://blog.livedoor.jp/honobonotaiki-matome/"
       ]
     },
     {
-      "name": "Nogizaka Journal",
+      "name": "日向坂46まとめ速報",
       "urls": [
-        "https://nogizakajournal.com/"
+        "https://hiraganakeyaki.blog.jp/"
       ]
     },
     {
-      "name": "日向坂46まとめもり〜",
+      "name": "日向坂46まとめたいよう",
       "urls": [
-        "https://hiraganakeyaki.blog.jp/",
-        "http://blog.livedoor.jp/hiraganakeyaki/"
+        "https://hinatazaka46matome.blog.jp/"
       ]
     },
     {
-      "name": "日向坂46速報",
+      "name": "欅って、何？（欅坂46まとめ）",
       "urls": [
-        "http://hinatazaka46soku.com/",
-        "https://hinatazaka46soku.com/"
+        "https://keyakittenani.blog.jp/"
       ]
     },
     {
-      "name": "日向坂46まとめ",
+      "name": "坂道まとめ研究所",
       "urls": [
-        "https://hinatazaka46matome.blog.jp/",
-        "http://blog.livedoor.jp/hinatazaka46matome/"
-      ]
-    },
-    {
-      "name": "けやき坂・日向坂まとめ",
-      "urls": [
-        "http://blog.livedoor.jp/keyaki_hinata/",
-        "https://keyakihinata.blog.jp/"
-      ]
-    },
-    {
-      "name": "坂道グループまとめ",
-      "urls": [
-        "https://sakamichi-matome.com/",
-        "http://blog.livedoor.jp/sakamichi_matome/"
+        "https://sakamichi-m.blog.jp/"
       ]
     }
   ]
