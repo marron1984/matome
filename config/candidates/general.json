@@ -1,0 +1,111 @@
+{
+  "$comment": "ジャンル全般の定番まとめブログ候補。実際にフィードが読めたものだけが購読に追加される（登録済みはスキップ）。",
+  "candidates": [
+    {
+      "name": "アルファルファモザイク",
+      "category": "総合",
+      "urls": [
+        "https://alfalfalfa.com/"
+      ]
+    },
+    {
+      "name": "ゴールデンタイムズ",
+      "category": "総合",
+      "urls": [
+        "http://blog.livedoor.jp/goldennews/"
+      ]
+    },
+    {
+      "name": "ニュー速クオリティ",
+      "category": "総合",
+      "urls": [
+        "http://news4vip.livedoor.biz/"
+      ]
+    },
+    {
+      "name": "VIPPER速報",
+      "category": "総合",
+      "urls": [
+        "https://vippers.jp/"
+      ]
+    },
+    {
+      "name": "ぶる速-VIP",
+      "category": "総合",
+      "urls": [
+        "http://burusoku-vip.com/"
+      ]
+    },
+    {
+      "name": "ガハろぐ",
+      "category": "総合",
+      "urls": [
+        "https://gahalog.2chblog.jp/"
+      ]
+    },
+    {
+      "name": "まとめたニュース",
+      "category": "ニュース",
+      "urls": [
+        "http://matometanews.com/"
+      ]
+    },
+    {
+      "name": "常識的に考えた",
+      "category": "ニュース",
+      "urls": [
+        "http://blog.livedoor.jp/jyoushiki43/"
+      ]
+    },
+    {
+      "name": "カラパイア",
+      "category": "科学・海外",
+      "urls": [
+        "https://karapaia.com/"
+      ]
+    },
+    {
+      "name": "らばQ",
+      "category": "科学・海外",
+      "urls": [
+        "https://labaq.com/"
+      ]
+    },
+    {
+      "name": "不思議.net",
+      "category": "不思議",
+      "urls": [
+        "https://world-fusigi.net/"
+      ]
+    },
+    {
+      "name": "ライフハックちゃんねる弐式",
+      "category": "生活",
+      "urls": [
+        "https://lifehack2ch.livedoor.biz/"
+      ]
+    },
+    {
+      "name": "お料理速報",
+      "category": "食",
+      "urls": [
+        "https://oryouri.2chblog.jp/"
+      ]
+    },
+    {
+      "name": "なんJ PRIDE",
+      "category": "なんJ",
+      "urls": [
+        "http://blog.livedoor.jp/nanjstu/"
+      ]
+    },
+    {
+      "name": "なんじぇいスタジアム（URL推測）",
+      "category": "なんJ",
+      "urls": [
+        "http://blog.livedoor.jp/nanjstadium/",
+        "https://nanjstadium.blog.jp/"
+      ]
+    }
+  ]
+}
