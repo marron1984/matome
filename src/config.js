@@ -1,4 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
@@ -9,15 +10,29 @@ export const paths = {
   public: join(ROOT_DIR, 'public'),
   fixtures: join(ROOT_DIR, 'fixtures'),
   sourcesFile: process.env.MATOME_SOURCES ?? join(ROOT_DIR, 'config', 'sources.json'),
-  dataDir: process.env.MATOME_DATA_DIR ?? join(ROOT_DIR, 'data'),
+  // サーバレス環境（Vercelなど）はプロジェクト配下が読み取り専用なので /tmp を使う。
+  dataDir: process.env.MATOME_DATA_DIR
+    ?? (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
+      ? join(tmpdir(), 'matome')
+      : join(ROOT_DIR, 'data')),
 };
 
 paths.storeFile = join(paths.dataDir, 'articles.json');
 
 /** config/sources.json を読み、最低限の検証をして返す。 */
-export async function loadSources(file = paths.sourcesFile) {
-  const raw = await readFile(file, 'utf8');
-  const parsed = JSON.parse(raw);
+export async function loadSources(file = process.env.MATOME_SOURCES ?? paths.sourcesFile) {
+  let parsed;
+  try {
+    parsed = JSON.parse(await readFile(file, 'utf8'));
+  } catch (error) {
+    // サーバレスにデプロイするとJSONが同梱されないことがあるので、
+    // 既定パスに限り、バンドルされたコピーへフォールバックする。
+    if (error.code === 'ENOENT' && file === paths.sourcesFile) {
+      parsed = (await import('../config/sources.json', { with: { type: 'json' } })).default;
+    } else {
+      throw error;
+    }
+  }
   const list = Array.isArray(parsed) ? parsed : parsed.sources;
   if (!Array.isArray(list)) throw new Error(`sources.json の形式が不正です: ${file}`);
 
@@ -40,7 +55,7 @@ export async function loadSources(file = paths.sourcesFile) {
 }
 
 /** config/sources.json を書き戻す（$comment などの付随キーは維持する）。 */
-export async function saveSources(sources, file = paths.sourcesFile) {
+export async function saveSources(sources, file = process.env.MATOME_SOURCES ?? paths.sourcesFile) {
   let extras = {};
   try {
     const parsed = JSON.parse(await readFile(file, 'utf8'));

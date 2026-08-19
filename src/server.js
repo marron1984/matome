@@ -53,10 +53,11 @@ function listParam(params, name) {
 }
 
 /**
- * APIと静的ファイルを配信するサーバを作る。
- * @param {{ store: import('./store.js').Store, sources: Array<object>, autoCrawl?: boolean }} deps
+ * APIと静的ファイルを配信する (req, res) ハンドラを作る。
+ * node:http でもサーバレス関数でも、そのまま使える形にしている。
+ * @param {{ store: import('./store.js').Store, sources: Array<object>, onCrawl?: () => Promise<object>, serveStatic?: boolean }} deps
  */
-export function createApp({ store, sources, onCrawl }) {
+export function createRequestHandler({ store, sources, onCrawl, serveStatic = true }) {
   const sourceById = new Map(sources.map((s) => [s.id, s]));
   const weights = Object.fromEntries(sources.map((s) => [s.id, s.weight ?? 1]));
   let crawling = null;
@@ -135,7 +136,7 @@ export function createApp({ store, sources, onCrawl }) {
     return sendJson(res, 404, { error: 'not found' });
   }
 
-  return createServer(async (req, res) => {
+  return async function handleRequest(req, res) {
     const url = new URL(req.url, `http://${req.headers.host ?? 'localhost'}`);
     try {
       if (url.pathname.startsWith('/api/')) {
@@ -143,6 +144,10 @@ export function createApp({ store, sources, onCrawl }) {
       }
       if (req.method !== 'GET' && req.method !== 'HEAD') {
         return sendJson(res, 405, { error: 'method not allowed' });
+      }
+      if (!serveStatic) {
+        // 静的配信はホスティング側（VercelのCDNなど）に任せる構成。
+        return sendJson(res, 404, { error: 'not found' });
       }
       const relative = normalize(decodeURIComponent(url.pathname)).replace(/^(\.\.[/\\])+/, '');
       const target = join(paths.public, relative === '/' || relative === '\\' ? 'index.html' : relative);
@@ -159,5 +164,10 @@ export function createApp({ store, sources, onCrawl }) {
       if (!res.headersSent) sendJson(res, 500, { error: error?.message ?? 'internal error' });
       else res.end();
     }
-  });
+  };
+}
+
+/** ローカル実行用に node:http のサーバとして包む。 */
+export function createApp(deps) {
+  return createServer(createRequestHandler(deps));
 }

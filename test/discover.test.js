@@ -127,3 +127,14 @@ test('同梱の config/sources.json は全件そのまま読み込める', async
   assert.ok(sources.every((s) => /^https?:\/\//.test(s.feed)));
   assert.equal(new Set(sources.map((s) => s.id)).size, sources.length);
 });
+
+test('設定ファイルが見つからない環境では、同梱コピーへフォールバックする', async (t) => {
+  const { paths } = await import('../src/config.js');
+  const original = paths.sourcesFile;
+  paths.sourcesFile = join(tmpdir(), 'matome-does-not-exist', 'sources.json');
+  t.after(() => { paths.sourcesFile = original; });
+
+  const sources = await loadSources();
+  assert.ok(sources.length >= 5, 'フォールバックでブログ一覧が取れる');
+  assert.ok(sources.every((s) => s.id && s.feed));
+});

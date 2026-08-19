@@ -16,23 +16,28 @@ export class Store {
   #path;
   #state;
   #writing = Promise.resolve();
+  #saveError = null;
 
   constructor(path, state = emptyState()) {
     this.#path = path;
     this.#state = state;
   }
 
-  static async open(path) {
+  /**
+   * 保存済みの記事を読み込む。
+   * 中身はフィードのキャッシュなので、壊れていても読めなくても
+   * 空から作り直せばよい。起動を止めない。
+   */
+  static async open(path, { logger = console } = {}) {
     let state = emptyState();
     try {
-      const raw = await readFile(path, 'utf8');
-      const parsed = JSON.parse(raw);
+      const parsed = JSON.parse(await readFile(path, 'utf8'));
       if (parsed && Array.isArray(parsed.articles)) {
         state = { ...emptyState(), ...parsed };
       }
     } catch (error) {
       if (error.code !== 'ENOENT') {
-        throw new Error(`ストアの読み込みに失敗しました (${path}): ${error.message}`);
+        logger.warn?.(`ストアを読めなかったので空から始めます (${path}): ${error.message}`);
       }
     }
     return new Store(path, state);
@@ -125,14 +130,30 @@ export class Store {
     return this.#state;
   }
 
-  /** 一時ファイル経由で書き込み、途中終了でファイルを壊さない。 */
+  /**
+   * 一時ファイル経由で書き込み、途中終了でファイルを壊さない。
+   * 書き込めない環境（サーバレスの読み取り専用FSなど）では
+   * 保存を諦めてメモリ上の状態だけで動き続ける。戻り値は保存できたか。
+   */
   async save() {
     this.#writing = this.#writing.then(async () => {
-      await mkdir(dirname(this.#path), { recursive: true });
-      const tmp = `${this.#path}.tmp`;
-      await writeFile(tmp, JSON.stringify(this.#state), 'utf8');
-      await rename(tmp, this.#path);
+      try {
+        await mkdir(dirname(this.#path), { recursive: true });
+        const tmp = `${this.#path}.tmp`;
+        await writeFile(tmp, JSON.stringify(this.#state), 'utf8');
+        await rename(tmp, this.#path);
+        this.#saveError = null;
+        return true;
+      } catch (error) {
+        this.#saveError = error;
+        return false;
+      }
     });
     return this.#writing;
+  }
+
+  /** 直近の保存に失敗した理由（保存できていれば null）。 */
+  get saveError() {
+    return this.#saveError;
   }
 }

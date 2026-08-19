@@ -26,7 +26,7 @@ node src/cli.js seed     # サンプル記事を投入（ネットワーク不�
 node src/cli.js verify   # 登録ブログのフィードが実在するか確認（要ネットワーク）
 node src/cli.js crawl    # 実際のまとめブログからRSSを取得（要ネットワーク）
 node src/cli.js serve    # http://localhost:3000 で起動（10分ごとに自動クロール）
-npm test                 # テスト（58件）
+npm test                 # テスト（64件）
 ```
 
 `npm start` / `npm run crawl` / `npm run seed` も同じです。
@@ -49,7 +49,9 @@ npm test                 # テスト（58件）
 | `PORT` | `3000` | `serve` のポート |
 | `MATOME_DATA_DIR` | `./data` | 記事データの保存先 |
 | `MATOME_SOURCES` | `./config/sources.json` | 購読ブログ定義 |
-| `MATOME_CRAWL_INTERVAL` | `10` | 自動クロールの分間隔 |
+| `MATOME_CRAWL_INTERVAL` | `10` | 自動クロールの分間隔（`serve`） |
+| `MATOME_REFRESH_MINUTES` | `10` | サーバレス時に再クロールするまでの分数 |
+| `MATOME_CRAWL_BUDGET_MS` | `8000` | サーバレス時のクロール打ち切り時間 |
 
 ## 購読ブログの追加・削除
 
@@ -140,9 +142,12 @@ src/store.js          JSON1枚の記事ストア（重複排除・保持期間�
 src/rank.js           並べ替え・絞り込み・NGワード
 src/discover.js       フィードの自動発見と実在確認（verify / add）
 src/crawler.js        クロールの全体制御
-src/server.js         静的配信 + JSON API
+src/server.js         静的配信 + JSON API（(req,res)ハンドラとして切り出し）
+src/serverless.js     Vercelなどサーバレス向けのハンドラ
 src/seed.js           サンプル記事の投入
 src/cli.js            CLIエントリポイント
+api/[...path].js      Vercelのサーバレス関数エントリポイント
+vercel.json           Vercelの配信設定（静的/関数/rewrite）
 public/               フロントエンド（素のHTML/CSS/JS）
 fixtures/             オフライン確認・テスト用のサンプルフィード
 test/                 node:test によるテスト
@@ -156,6 +161,50 @@ test/                 node:test によるテスト
 | `GET /api/sources` | 購読ブログ一覧（記事数・最終取得状況つき） |
 | `GET /api/status` | 記事数・最終更新時刻 |
 | `POST /api/refresh` | 手動クロール（同時実行は1本にまとめられます） |
+
+## Vercel へのデプロイ
+
+このリポジトリはそのまま Vercel にデプロイできます（Framework Preset は "Other"、ビルドコマンド不要）。
+
+- `public/` … 静的ファイルとしてCDNから配信（`vercel.json` の `outputDirectory`）
+- `api/[...path].js` … `/api/*` を処理するサーバレス関数（`src/serverless.js` の実体）
+- それ以外のパス … `vercel.json` の rewrite で `index.html` に流す（SPAのため）
+
+```bash
+npx vercel deploy --prod
+```
+
+### サーバレスでの動き方（常駐サーバとの違い）
+
+Vercelにはプロセスの常駐も書き込み可能なディスクもありません。そのため次のようにしています。
+
+| | ローカル（`serve`） | Vercel |
+| --- | --- | --- |
+| クロール | 10分ごとにバックグラウンド実行 | 記事が空のリクエストで実行、以降は10分経過後に裏で更新 |
+| 保存先 | `./data/articles.json` | `/tmp/matome/articles.json`（インスタンスが生きている間だけ） |
+| 記事の共有 | 全リクエストで共通 | インスタンスごと。書き込めない場合はメモリ上だけで動作 |
+
+- 最初のアクセス（コールドスタート）だけはクロールを待つので数秒かかります。`MATOME_CRAWL_BUDGET_MS`（既定8000）が上限です。
+- 関数のタイムアウトは `vercel.json` で30秒にしています。
+- `config/sources.json` は `includeFiles` で関数に同梱し、それでも読めなかった場合はバンドルされたコピーへフォールバックします。
+- 常に同じ記事一覧を返したい／クロール回数を減らしたい場合は、Vercel KV や Blob などの外部ストレージに `src/store.js` の保存先を差し替えるのが素直です。
+
+### 500 (FUNCTION_INVOCATION_FAILED) が出たとき
+
+まず実際の例外を確認してください。Vercel ダッシュボードの Deployment → **Logs**、または:
+
+```bash
+npx vercel logs <デプロイURL>
+```
+
+よくある原因:
+
+| 症状 | 原因と対処 |
+| --- | --- |
+| `EROFS: read-only file system` | プロジェクト配下へ書こうとしている。`MATOME_DATA_DIR` を `/tmp/...` にする（既定で対応済み） |
+| `ENOENT ... config/sources.json` | 設定ファイルが関数に同梱されていない。`vercel.json` の `includeFiles` を確認 |
+| `/api/*` が404 | `api/[...path].js` が無い、または Root Directory の設定がリポジトリ直下になっていない |
+| タイムアウト | クロールが重い。`MATOME_CRAWL_BUDGET_MS` を短く、`config/sources.json` のブログ数を減らす |
 
 ## 運用メモ
 
