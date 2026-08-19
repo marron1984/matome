@@ -88,7 +88,8 @@
       "category": "坂道",
       "site": "https://keyakittenani.blog.jp/",
       "feed": "https://keyakittenani.blog.jp/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "hiraganakeyaki-blog",
@@ -96,7 +97,8 @@
       "category": "坂道",
       "site": "https://hiraganakeyaki.blog.jp/",
       "feed": "https://hiraganakeyaki.blog.jp/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "hinatazaka46matome-blog",
@@ -104,7 +106,8 @@
       "category": "坂道",
       "site": "https://hinatazaka46matome.blog.jp/",
       "feed": "https://hinatazaka46matome.blog.jp/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "sakamichi-m-blog",
@@ -112,6 +115,39 @@
       "category": "坂道",
       "site": "https://sakamichi-m.blog.jp/",
       "feed": "https://sakamichi-m.blog.jp/index.rdf",
+      "weight": 1,
+      "enabled": true
+    },
+    {
+      "id": "nogizaka46link-blog",
+      "name": "乃木坂46まとめ 乃木りんく",
+      "category": "坂道",
+      "site": "https://nogizaka46link.blog.jp/",
+      "feed": "https://nogizaka46link.blog.jp/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "46room-blog",
+      "name": "乃木坂46まとめもり～",
+      "category": "坂道",
+      "site": "https://46room.blog.jp/",
+      "feed": "https://46room.blog.jp/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "ngz46-livedoor",
+      "name": "乃木坂46なブログ",
+      "category": "坂道",
+      "site": "https://ngz46.livedoor.blog/",
+      "feed": "https://ngz46.livedoor.blog/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "blog-livedoor-honobonotaiki-matome",
+      "name": "乃木坂ってそこ!?～まとめブログ～",
+      "category": "坂道",
+      "site": "http://blog.livedoor.jp/honobonotaiki-matome/",
+      "feed": "http://blog.livedoor.jp/honobonotaiki-matome/index.rdf",
       "weight": 1
     }
   ]
