@@ -154,8 +154,9 @@ test('resolveCandidates は読めた候補だけを購読エントリにする',
     { name: 'URLなし' },
   ], { existing: [], category: '坂道' });
 
-  assert.deepEqual(result.added.map((e) => e.name), ['生きているまとめ', '移転したまとめ']);
-  assert.equal(result.added[1].feed, `${base}/moved/index.rdf`);
+  // 登録名はフィード自身のタイトル（候補名はラベルに過ぎない）
+  assert.deepEqual(result.added.map((e) => e.name), ['実在するまとめ', '実在するまとめ']);
+  assert.deepEqual(result.added.map((e) => e.feed), [`${base}/alive/index.rdf`, `${base}/moved/index.rdf`]);
   assert.ok(result.added.every((e) => e.category === '坂道'));
   assert.equal(new Set(result.added.map((e) => e.id)).size, 2, 'idが重複しない');
   assert.equal(result.failed.length, 2);

@@ -1,16 +1,75 @@
 {
-  "$comment": "坂道グループ（乃木坂46・日向坂46など）のまとめブログ候補。`node src/cli.js add --list config/candidates/sakamichi.json` で、実際にフィードが読めたものだけが購読に追加される。urls は移転前後などの候補で、先に読めたものが採用される。",
+  "$comment": "坂道グループ（乃木坂46・日向坂46など）のまとめブログ候補。`node src/cli.js add --list config/candidates/sakamichi.json` で、実際にフィードが読めたものだけが購読に追加される。urls は移転前後などの候補で、先に読めたものが採用される。 登録名はフィード自身のタイトルが使われる。",
   "category": "坂道",
   "candidates": [
-    { "name": "乃木坂46まとめ 1/46", "urls": ["http://blog.livedoor.jp/nogizaka46_128/", "https://nogizaka46_128.blog.jp/"] },
-    { "name": "乃木坂46速報", "urls": ["http://nogisoku.com/", "https://nogisoku.com/"] },
-    { "name": "乃木坂46まとめたいよ〜", "urls": ["http://blog.livedoor.jp/nogizaka46matome/", "https://nogizaka46matome.blog.jp/"] },
-    { "name": "乃木坂46まとめ ラジオの時間", "urls": ["http://blog.livedoor.jp/nogizakalove/", "https://nogizakalove.blog.jp/"] },
-    { "name": "Nogizaka Journal", "urls": ["https://nogizakajournal.com/"] },
-    { "name": "日向坂46まとめもり〜", "urls": ["https://hiraganakeyaki.blog.jp/", "http://blog.livedoor.jp/hiraganakeyaki/"] },
-    { "name": "日向坂46速報", "urls": ["http://hinatazaka46soku.com/", "https://hinatazaka46soku.com/"] },
-    { "name": "日向坂46まとめ", "urls": ["https://hinatazaka46matome.blog.jp/", "http://blog.livedoor.jp/hinatazaka46matome/"] },
-    { "name": "けやき坂・日向坂まとめ", "urls": ["http://blog.livedoor.jp/keyaki_hinata/", "https://keyakihinata.blog.jp/"] },
-    { "name": "坂道グループまとめ", "urls": ["https://sakamichi-matome.com/", "http://blog.livedoor.jp/sakamichi_matome/"] }
+    {
+      "name": "乃木坂46まとめ 1/46",
+      "urls": [
+        "http://blog.livedoor.jp/nogizaka46_128/",
+        "https://nogizaka46_128.blog.jp/"
+      ]
+    },
+    {
+      "name": "乃木坂46速報",
+      "urls": [
+        "http://nogisoku.com/",
+        "https://nogisoku.com/"
+      ]
+    },
+    {
+      "name": "乃木坂46まとめたいよ〜",
+      "urls": [
+        "http://blog.livedoor.jp/nogizaka46matome/",
+        "https://nogizaka46matome.blog.jp/"
+      ]
+    },
+    {
+      "name": "乃木坂46まとめ ラジオの時間",
+      "urls": [
+        "http://blog.livedoor.jp/nogizakalove/",
+        "https://nogizakalove.blog.jp/"
+      ]
+    },
+    {
+      "name": "Nogizaka Journal",
+      "urls": [
+        "https://nogizakajournal.com/"
+      ]
+    },
+    {
+      "name": "日向坂46まとめもり〜",
+      "urls": [
+        "https://hiraganakeyaki.blog.jp/",
+        "http://blog.livedoor.jp/hiraganakeyaki/"
+      ]
+    },
+    {
+      "name": "日向坂46速報",
+      "urls": [
+        "http://hinatazaka46soku.com/",
+        "https://hinatazaka46soku.com/"
+      ]
+    },
+    {
+      "name": "日向坂46まとめ",
+      "urls": [
+        "https://hinatazaka46matome.blog.jp/",
+        "http://blog.livedoor.jp/hinatazaka46matome/"
+      ]
+    },
+    {
+      "name": "けやき坂・日向坂まとめ",
+      "urls": [
+        "http://blog.livedoor.jp/keyaki_hinata/",
+        "https://keyakihinata.blog.jp/"
+      ]
+    },
+    {
+      "name": "坂道グループまとめ",
+      "urls": [
+        "https://sakamichi-matome.com/",
+        "http://blog.livedoor.jp/sakamichi_matome/"
+      ]
+    }
   ]
 }

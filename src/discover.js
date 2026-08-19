@@ -161,7 +161,9 @@ export async function resolveCandidates(candidates, options = {}) {
 
     const entry = {
       id: uniqueId(candidate.id ?? defaultId(found.site || found.url), takenIds),
-      name: candidate.name ?? found.title ?? found.url,
+      // 候補名はあくまで探すためのラベル。移転・改名していることがあるので、
+      // 登録名はフィード自身が名乗るタイトルを正とする。
+      name: found.title || candidate.name || found.url,
       category: candidate.category ?? category,
       site: found.site || urls[0],
       feed: found.url,
