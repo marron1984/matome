@@ -160,7 +160,8 @@
       "category": "坂道",
       "site": "https://sakamichijyoho46.blog.jp/",
       "feed": "https://sakamichijyoho46.blog.jp/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "keyakizaka1-blog",
@@ -168,7 +169,8 @@
       "category": "坂道",
       "site": "https://keyakizaka1.blog.jp/",
       "feed": "https://keyakizaka1.blog.jp/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "nogizaka46aidoru-livedoor",
@@ -176,7 +178,8 @@
       "category": "坂道",
       "site": "https://nogizaka46aidoru.livedoor.blog/",
       "feed": "https://nogizaka46aidoru.livedoor.blog/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "nogizakalife-tokyo",
@@ -184,6 +187,95 @@
       "category": "坂道",
       "site": "https://nogizakalife.tokyo/",
       "feed": "https://nogizakalife.tokyo/?feed=rss2",
+      "weight": 1,
+      "enabled": true
+    },
+    {
+      "id": "alfalfalfa",
+      "name": "アルファルファモザイク＠ネットニュースのまとめ",
+      "category": "総合",
+      "site": "https://alfalfalfa.com/",
+      "feed": "https://alfalfalfa.com/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "blog-livedoor-goldennews",
+      "name": "ゴールデンタイムズ",
+      "category": "総合",
+      "site": "http://blog.livedoor.jp/goldennews/",
+      "feed": "http://blog.livedoor.jp/goldennews/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "news4vip-livedoor-biz",
+      "name": "【2ch】ニュー速クオリティ",
+      "category": "総合",
+      "site": "https://news4vip.livedoor.biz/",
+      "feed": "https://news4vip.livedoor.biz/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "burusoku-vip",
+      "name": "ぶる速-VIP",
+      "category": "総合",
+      "site": "http://burusoku-vip.com/",
+      "feed": "http://burusoku-vip.com/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "gahalog-2chblog",
+      "name": "ガハろぐNewsヽ(･ω･)/ｽﾞｺｰ",
+      "category": "総合",
+      "site": "https://gahalog.2chblog.jp/",
+      "feed": "https://gahalog.2chblog.jp/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "matometanews",
+      "name": "まとめたニュース",
+      "category": "ニュース",
+      "site": "http://matometanews.com/",
+      "feed": "http://matometanews.com/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "blog-livedoor-jyoushiki43",
+      "name": "常識的に考えた",
+      "category": "ニュース",
+      "site": "http://blog.livedoor.jp/jyoushiki43/",
+      "feed": "http://blog.livedoor.jp/jyoushiki43/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "karapaia",
+      "name": "カラパイア",
+      "category": "科学・海外",
+      "site": "https://karapaia.com/",
+      "feed": "https://karapaia.com/feed",
+      "weight": 1
+    },
+    {
+      "id": "lifehack2ch-livedoor-biz",
+      "name": "ライフハックちゃんねる弐式",
+      "category": "生活",
+      "site": "https://lifehack2ch.livedoor.biz/",
+      "feed": "https://lifehack2ch.livedoor.biz/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "oryouri-2chblog",
+      "name": "お料理速報",
+      "category": "食",
+      "site": "https://oryouri.2chblog.jp/",
+      "feed": "https://oryouri.2chblog.jp/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "blog-livedoor-nanjstu",
+      "name": "なんじぇいスタジアム＠なんJまとめ",
+      "category": "なんJ",
+      "site": "http://blog.livedoor.jp/nanjstu/",
+      "feed": "http://blog.livedoor.jp/nanjstu/index.rdf",
       "weight": 1
     }
   ]
