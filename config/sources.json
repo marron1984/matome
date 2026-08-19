@@ -7,7 +7,8 @@
       "category": "ニュース",
       "site": "http://blog.livedoor.jp/dqnplus/",
       "feed": "http://blog.livedoor.jp/dqnplus/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "hamusoku",
@@ -15,7 +16,8 @@
       "category": "ニュース",
       "site": "http://hamusoku.com/",
       "feed": "http://hamusoku.com/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "nwknews",
@@ -23,7 +25,8 @@
       "category": "総合",
       "site": "http://blog.livedoor.jp/nwknews/",
       "feed": "http://blog.livedoor.jp/nwknews/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "news4vip",
@@ -31,7 +34,8 @@
       "category": "総合",
       "site": "http://blog.livedoor.jp/news4vip/",
       "feed": "http://blog.livedoor.jp/news4vip/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "himasoku",
@@ -39,7 +43,8 @@
       "category": "総合",
       "site": "http://himasoku.com/",
       "feed": "http://himasoku.com/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "kinisoku",
@@ -47,7 +52,8 @@
       "category": "総合",
       "site": "http://blog.livedoor.jp/kinisoku/",
       "feed": "http://blog.livedoor.jp/kinisoku/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "itsoku",
@@ -55,7 +61,8 @@
       "category": "IT",
       "site": "http://blog.livedoor.jp/itsoku/",
       "feed": "http://blog.livedoor.jp/itsoku/index.rdf",
-      "weight": 1
+      "weight": 1,
+      "enabled": true
     },
     {
       "id": "jin115",
@@ -63,7 +70,8 @@
       "category": "ゲーム",
       "site": "http://jin115.com/",
       "feed": "http://jin115.com/index.rdf",
-      "weight": 0.8
+      "weight": 0.8,
+      "enabled": true
     },
     {
       "id": "esuteru",
@@ -71,7 +79,40 @@
       "category": "ゲーム",
       "site": "http://blog.esuteru.com/",
       "feed": "http://blog.esuteru.com/index.rdf",
-      "weight": 0.8
+      "weight": 0.8,
+      "enabled": true
+    },
+    {
+      "id": "keyakittenani-blog",
+      "name": "乃木坂46まとめ ラジオの時間",
+      "category": "坂道",
+      "site": "https://keyakittenani.blog.jp/",
+      "feed": "https://keyakittenani.blog.jp/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "hiraganakeyaki-blog",
+      "name": "日向坂46まとめもり〜",
+      "category": "坂道",
+      "site": "https://hiraganakeyaki.blog.jp/",
+      "feed": "https://hiraganakeyaki.blog.jp/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "hinatazaka46matome-blog",
+      "name": "日向坂46まとめ",
+      "category": "坂道",
+      "site": "https://hinatazaka46matome.blog.jp/",
+      "feed": "https://hinatazaka46matome.blog.jp/index.rdf",
+      "weight": 1
+    },
+    {
+      "id": "sakamichi-m-blog",
+      "name": "坂道グループまとめ",
+      "category": "坂道",
+      "site": "https://sakamichi-m.blog.jp/",
+      "feed": "https://sakamichi-m.blog.jp/index.rdf",
+      "weight": 1
     }
   ]
 }
