@@ -23,9 +23,10 @@ Node.js標準機能だけで動きます（**依存パッケージゼロ**、ビ
 
 ```bash
 node src/cli.js seed     # サンプル記事を投入（ネットワーク不要。まず動かしたいとき）
+node src/cli.js verify   # 登録ブログのフィードが実在するか確認（要ネットワーク）
 node src/cli.js crawl    # 実際のまとめブログからRSSを取得（要ネットワーク）
 node src/cli.js serve    # http://localhost:3000 で起動（10分ごとに自動クロール）
-npm test                 # テスト（49件）
+npm test                 # テスト（58件）
 ```
 
 `npm start` / `npm run crawl` / `npm run seed` も同じです。
@@ -38,6 +39,8 @@ npm test                 # テスト（49件）
 | `crawl [--no-bookmarks]` | フィードを1回取得してストアを更新 |
 | `seed` | `fixtures/` のサンプル記事を投入（オフライン確認用） |
 | `sources` | 購読ブログ一覧と最終取得状況を表示 |
+| `verify [--prune]` | 全フィードが実在するか確認。`--prune` で読めないブログを設定から削除 |
+| `add <サイトURL> [--id] [--name] [--category]` | サイトURLからフィードを自動発見して購読に追加 |
 
 ### 環境変数
 
@@ -50,7 +53,43 @@ npm test                 # テスト（49件）
 
 ## 購読ブログの追加・削除
 
-`config/sources.json` を編集するだけです。RSS 2.0 / RSS 1.0(RDF) / Atom のいずれにも対応しています。
+### 実在するものだけを残す
+
+同梱の `config/sources.json` には、長く続いている定番のまとめブログだけを9件入れてあります。
+URLが生きているかは環境によって変わるので、**手元のネットワークで一度 `verify` を通してください**。
+
+```bash
+$ node src/cli.js verify
+✓ 痛いニュース(ﾉ∀`) — 30件 / 最新 2026/8/19 14:32:10
+✗ 例のブログ — HTTP 404 Not Found
+    http://example.jp/index.rdf
+
+実在 8 / 到達できず 1
+削除するには --prune を付けて再実行してください。
+
+$ node src/cli.js verify --prune     # 到達できなかったブログを設定から削除
+```
+
+`verify` は「HTTPで取れる」だけでなく「フィードとして解析でき、記事が1件以上ある」ところまで確認します。
+到達できないブログが1件でもあれば終了コード1を返すので、定期実行の監視にも使えます。
+
+### 探して追加する
+
+フィードURLが分からなくても、サイトのURLだけで追加できます。
+
+```bash
+$ node src/cli.js add https://example.jp/ --category 総合
+フィードを探しています: https://example.jp/
+追加しました（ページ内のリンクから発見）
+  例のまとめ [example] — https://example.jp/index.rdf（30件）
+```
+
+探す順番は ①渡されたURLがそのままフィードか → ②HTMLの `<link rel="alternate">` → ③`/index.rdf` `/feed` `/rss` `/atom.xml` などの定番パス、です。
+どれも読めなければ追加せず、試したURLと理由を表示します。
+
+### 直接編集する
+
+`config/sources.json` を編集しても構いません。RSS 2.0 / RSS 1.0(RDF) / Atom のいずれにも対応しています。
 
 ```json
 { "id": "myblog", "name": "マイまとめ", "category": "総合",
@@ -99,6 +138,7 @@ src/http.js           fetchラッパ（タイムアウト・リトライ・文�
 src/hatena.js         はてなブックマーク数の一括取得
 src/store.js          JSON1枚の記事ストア（重複排除・保持期間の管理）
 src/rank.js           並べ替え・絞り込み・NGワード
+src/discover.js       フィードの自動発見と実在確認（verify / add）
 src/crawler.js        クロールの全体制御
 src/server.js         静的配信 + JSON API
 src/seed.js           サンプル記事の投入

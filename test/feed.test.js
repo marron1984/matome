@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { parseFeed } from '../src/feed.js';
 
 const RDF = `<?xml version="1.0" encoding="UTF-8"?>
@@ -61,8 +61,11 @@ test('空文字や壊れたXMLでも例外を投げない', () => {
 });
 
 test('同梱のサンプルフィードをすべて解析できる', async () => {
-  for (const file of ['dqnplus', 'nwknews', 'itsoku', 'fesoku', 'news4vip', 'hamusoku', 'jin115']) {
-    const xml = await readFile(new URL(`../fixtures/feeds/${file}.rdf`, import.meta.url), 'utf8');
+  const dir = new URL('../fixtures/feeds/', import.meta.url);
+  const files = (await readdir(dir)).filter((f) => f.endsWith('.rdf'));
+  assert.ok(files.length > 0, 'サンプルフィードが1件も無い');
+  for (const file of files) {
+    const xml = await readFile(new URL(file, dir), 'utf8');
     const feed = parseFeed(xml.replace(/\{\{-(\d+)m\}\}/g, '2026-08-19T04:00:00Z'), { feedUrl: 'http://x/' });
     assert.ok(feed.items.length > 0, `${file} の記事が0件`);
     assert.ok(feed.items.every((i) => i.url && i.title));

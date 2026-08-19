@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
@@ -37,4 +37,21 @@ export async function loadSources(file = paths.sourcesFile) {
       enabled: source.enabled !== false,
     };
   });
+}
+
+/** config/sources.json を書き戻す（$comment などの付随キーは維持する）。 */
+export async function saveSources(sources, file = paths.sourcesFile) {
+  let extras = {};
+  try {
+    const parsed = JSON.parse(await readFile(file, 'utf8'));
+    if (parsed && !Array.isArray(parsed)) {
+      const { sources: _ignored, ...rest } = parsed;
+      extras = rest;
+    }
+  } catch {
+    extras = {};
+  }
+  const body = JSON.stringify({ ...extras, sources }, null, 2);
+  await writeFile(file, `${body}\n`, 'utf8');
+  return sources.length;
 }

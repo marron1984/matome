@@ -77,6 +77,19 @@ export function findElements(xml, name) {
   return out;
 }
 
+/**
+ * 開始タグだけを列挙する。HTMLの <link ...> のように閉じタグを持たない要素向け。
+ */
+export function findOpenTags(xml, name) {
+  const re = new RegExp(`<${escapeName(name)}(\\s[^>]*?)?/?>`, 'gi');
+  const out = [];
+  let m;
+  while ((m = re.exec(String(xml ?? ''))) !== null) {
+    out.push({ attrs: (m[1] ?? '').trim() });
+  }
+  return out;
+}
+
 /** 最初に見つかったタグの中身をテキストとして返す。候補名は先勝ち。 */
 export function textOf(xml, names) {
   for (const name of [].concat(names)) {

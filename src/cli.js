@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-import { loadSources, paths } from './config.js';
+import { loadSources, saveSources, paths } from './config.js';
 import { Store } from './store.js';
 import { crawl } from './crawler.js';
 import { createApp } from './server.js';
 import { seed } from './seed.js';
+import { discoverFeed, verifySources } from './discover.js';
 
 const USAGE = `まとめサイトのまとめサイト
 
@@ -12,6 +13,9 @@ const USAGE = `まとめサイトのまとめサイト
   node src/cli.js crawl [--no-bookmarks]               フィードを1回取得してストアを更新
   node src/cli.js seed                                 サンプル記事を投入（オフライン確認用）
   node src/cli.js sources                              購読中のブログ一覧と最終取得状況を表示
+  node src/cli.js verify [--prune]                     全フィードが実在するか確認（--prune で読めないブログを設定から削除）
+  node src/cli.js add <サイトURL> [--id x] [--name y] [--category z]
+                                                       サイトURLからフィードを自動発見して購読に追加
 
 環境変数:
   PORT               serve のポート（既定 3000）
@@ -33,6 +37,18 @@ function parseArgs(argv) {
     }
   }
   return args;
+}
+
+/** サイトURLから、それらしいidを作る（example.com/blog → example-blog）。 */
+function defaultId(url) {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, '').replace(/\.(com|net|jp|org|blog|info)$/g, '');
+    const path = parsed.pathname.replace(/^\/|\/$/g, '').split('/')[0];
+    return [host, path].filter(Boolean).join('-').replace(/[^\w-]/g, '-').toLowerCase() || 'blog';
+  } catch {
+    return 'blog';
+  }
 }
 
 function formatTime(ms) {
@@ -66,6 +82,72 @@ async function main() {
   if (command === 'seed') {
     const result = await seed(store, sources);
     console.log(`サンプル投入: ${result.files}フィード / 新規 ${result.added}件 / 保有 ${result.total}件`);
+    return;
+  }
+
+  if (command === 'verify') {
+    const results = await verifySources(sources, {
+      logger: (source, result) => {
+        if (result.ok) {
+          const latest = result.latest ? `最新 ${formatTime(result.latest)}` : '日時なし';
+          console.log(`✓ ${source.name} — ${result.count}件 / ${latest}`);
+        } else {
+          console.log(`✗ ${source.name} — ${result.error}\n    ${source.feed}`);
+        }
+      },
+    });
+    const alive = results.filter((r) => r.ok);
+    const dead = results.filter((r) => !r.ok);
+    console.log(`\n実在 ${alive.length} / 到達できず ${dead.length}`);
+
+    if (args.prune && dead.length > 0) {
+      const deadIds = new Set(dead.map((r) => r.source.id));
+      const kept = sources.filter((s) => !deadIds.has(s.id));
+      await saveSources(kept);
+      console.log(`設定から削除: ${dead.map((r) => r.source.name).join('、')}`);
+      console.log(`残り ${kept.length}ブログ（${paths.sourcesFile}）`);
+    } else if (dead.length > 0) {
+      console.log('削除するには --prune を付けて再実行してください。');
+    }
+    if (dead.length > 0 && !args.prune) process.exitCode = 1;
+    return;
+  }
+
+  if (command === 'add') {
+    const target = args._[1];
+    if (!target) {
+      process.stderr.write('サイトURL（またはフィードURL）を指定してください\n');
+      process.exitCode = 2;
+      return;
+    }
+    console.log(`フィードを探しています: ${target}`);
+    const found = await discoverFeed(target);
+    if (!found.ok) {
+      console.error(`見つかりませんでした: ${found.error}`);
+      for (const attempt of found.tried ?? []) {
+        if (!attempt.ok) console.error(`  試行: ${attempt.url} — ${attempt.error}`);
+      }
+      process.exitCode = 1;
+      return;
+    }
+
+    const id = args.id ?? defaultId(found.site || found.url);
+    if (sources.some((s) => s.id === id)) {
+      console.error(`id が既にあります: ${id}（--id で別名を指定してください）`);
+      process.exitCode = 1;
+      return;
+    }
+    const entry = {
+      id,
+      name: args.name ?? found.title ?? id,
+      category: args.category ?? 'その他',
+      site: found.site || target,
+      feed: found.url,
+      weight: 1,
+    };
+    await saveSources([...sources, entry]);
+    console.log(`追加しました（${found.via === 'direct' ? '指定URLがフィード' : found.via === 'link' ? 'ページ内のリンクから発見' : 'よくあるパスから発見'}）`);
+    console.log(`  ${entry.name} [${entry.id}] — ${entry.feed}（${found.count}件）`);
     return;
   }
 
