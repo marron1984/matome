@@ -1,10 +1,11 @@
 #!/usr/bin/env node
+import { readFile } from 'node:fs/promises';
 import { loadSources, saveSources, paths } from './config.js';
 import { Store } from './store.js';
 import { crawl } from './crawler.js';
 import { createApp } from './server.js';
 import { seed } from './seed.js';
-import { discoverFeed, verifySources } from './discover.js';
+import { discoverFeed, verifySources, resolveCandidates, defaultId } from './discover.js';
 
 const USAGE = `まとめサイトのまとめサイト
 
@@ -16,6 +17,8 @@ const USAGE = `まとめサイトのまとめサイト
   node src/cli.js verify [--prune]                     全フィードが実在するか確認（--prune で読めないブログを設定から削除）
   node src/cli.js add <サイトURL> [--id x] [--name y] [--category z]
                                                        サイトURLからフィードを自動発見して購読に追加
+  node src/cli.js add --list <候補ファイル> [--category z] [--dry-run]
+                                                       候補リストをまとめて試し、読めたものだけ追加
 
 環境変数:
   PORT               serve のポート（既定 3000）
@@ -37,18 +40,6 @@ function parseArgs(argv) {
     }
   }
   return args;
-}
-
-/** サイトURLから、それらしいidを作る（example.com/blog → example-blog）。 */
-function defaultId(url) {
-  try {
-    const parsed = new URL(url);
-    const host = parsed.hostname.replace(/^www\./, '').replace(/\.(com|net|jp|org|blog|info)$/g, '');
-    const path = parsed.pathname.replace(/^\/|\/$/g, '').split('/')[0];
-    return [host, path].filter(Boolean).join('-').replace(/[^\w-]/g, '-').toLowerCase() || 'blog';
-  } catch {
-    return 'blog';
-  }
 }
 
 function formatTime(ms) {
@@ -114,9 +105,39 @@ async function main() {
   }
 
   if (command === 'add') {
+    if (args.list) {
+      const raw = JSON.parse(await readFile(args.list, 'utf8'));
+      const candidates = Array.isArray(raw) ? raw : raw.candidates ?? raw.sites ?? [];
+      if (candidates.length === 0) {
+        process.stderr.write(`候補が空です: ${args.list}\n`);
+        process.exitCode = 2;
+        return;
+      }
+      console.log(`${candidates.length}件の候補を順に確認します…\n`);
+      const result = await resolveCandidates(candidates, {
+        existing: sources,
+        category: args.category ?? raw.category ?? 'その他',
+        logger: (event) => {
+          if (event.type === 'add') console.log(`✓ ${event.label} — ${event.entry.feed}（${event.count}件）`);
+          if (event.type === 'skip') console.log(`- ${event.label} — ${event.reason}`);
+          if (event.type === 'fail') console.log(`✗ ${event.label} — ${event.error}`);
+        },
+      });
+
+      console.log(`\n追加 ${result.added.length} / 登録済み ${result.skipped.length} / 見つからず ${result.failed.length}`);
+      if (result.added.length === 0) return;
+      if (args['dry-run']) {
+        console.log('--dry-run のため設定は変更していません。');
+        return;
+      }
+      await saveSources([...sources, ...result.added]);
+      console.log(`${paths.sourcesFile} を更新しました（計 ${sources.length + result.added.length}ブログ）`);
+      return;
+    }
+
     const target = args._[1];
     if (!target) {
-      process.stderr.write('サイトURL（またはフィードURL）を指定してください\n');
+      process.stderr.write('サイトURL（またはフィードURL）、あるいは --list <候補ファイル> を指定してください\n');
       process.exitCode = 2;
       return;
     }

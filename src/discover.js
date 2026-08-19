@@ -81,6 +81,101 @@ export async function discoverFeed(input, options = {}) {
   return { ok: false, url: input, error: 'フィードが見つかりませんでした', tried };
 }
 
+/** サイトURLから、それらしいidを作る（example.com/blog → example-blog）。 */
+export function defaultId(url) {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, '').replace(/\.(com|net|jp|org|blog|info)$/g, '');
+    const path = parsed.pathname.replace(/^\/|\/$/g, '').split('/')[0];
+    return [host, path].filter(Boolean).join('-').replace(/[^\w-]/g, '-').toLowerCase() || 'blog';
+  } catch {
+    return 'blog';
+  }
+}
+
+function uniqueId(base, taken) {
+  if (!taken.has(base)) return base;
+  for (let i = 2; i < 100; i += 1) {
+    if (!taken.has(`${base}-${i}`)) return `${base}-${i}`;
+  }
+  return `${base}-${Date.now()}`;
+}
+
+/**
+ * 候補リスト（サイトURLの一覧）から、実際に読めたものだけを購読エントリにする。
+ * 1件に複数のURL候補（移転前/後など）を書ける。先に読めたものを採用する。
+ *
+ * @param {Array<{name?: string, url?: string, urls?: string[], category?: string, weight?: number}>} candidates
+ * @param {{ existing?: Array<object>, category?: string, discover?: Function, logger?: Function }} options
+ * @returns {Promise<{ added: Array<object>, skipped: Array<object>, failed: Array<object> }>}
+ */
+export async function resolveCandidates(candidates, options = {}) {
+  const {
+    existing = [],
+    category = 'その他',
+    discover = discoverFeed,
+    logger = () => {},
+  } = options;
+
+  const takenIds = new Set(existing.map((s) => s.id));
+  const takenFeeds = new Set(existing.map((s) => s.feed));
+  const takenSites = new Set(existing.map((s) => s.site).filter(Boolean));
+  const added = [];
+  const skipped = [];
+  const failed = [];
+
+  for (const candidate of candidates) {
+    const urls = candidate.urls ?? [candidate.url].filter(Boolean);
+    const label = candidate.name ?? urls[0] ?? '(URLなし)';
+    if (urls.length === 0) {
+      failed.push({ candidate, error: 'URLがありません' });
+      continue;
+    }
+    if (urls.some((u) => takenFeeds.has(u) || takenSites.has(u))) {
+      skipped.push({ candidate, reason: '登録済み' });
+      logger({ type: 'skip', label, reason: '登録済み' });
+      continue;
+    }
+
+    let found = null;
+    const attempts = [];
+    for (const url of urls) {
+      const result = await discover(url);
+      attempts.push(result);
+      if (result.ok) {
+        found = result;
+        break;
+      }
+    }
+
+    if (!found) {
+      failed.push({ candidate, error: attempts.at(-1)?.error ?? '見つかりませんでした' });
+      logger({ type: 'fail', label, error: attempts.at(-1)?.error ?? '見つかりませんでした' });
+      continue;
+    }
+    if (takenFeeds.has(found.url)) {
+      skipped.push({ candidate, reason: '同じフィードが登録済み' });
+      logger({ type: 'skip', label, reason: '同じフィードが登録済み' });
+      continue;
+    }
+
+    const entry = {
+      id: uniqueId(candidate.id ?? defaultId(found.site || found.url), takenIds),
+      name: candidate.name ?? found.title ?? found.url,
+      category: candidate.category ?? category,
+      site: found.site || urls[0],
+      feed: found.url,
+      weight: candidate.weight ?? 1,
+    };
+    takenIds.add(entry.id);
+    takenFeeds.add(entry.feed);
+    added.push(entry);
+    logger({ type: 'add', label, entry, count: found.count, via: found.via });
+  }
+
+  return { added, skipped, failed };
+}
+
 /** 設定済みの全ブログについて、フィードが今も生きているかを確かめる。 */
 export async function verifySources(sources, options = {}) {
   const { concurrency = 4, logger = () => {}, ...rest } = options;

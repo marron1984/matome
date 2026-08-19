@@ -7,7 +7,10 @@ const KEYS = {
   settings: 'matome.settings.v1',
   bookmarks: 'matome.bookmarks.v1',
   read: 'matome.read.v1',
+  nav: 'matome.nav.v1',
 };
+
+const SETTINGS_SCHEMA = 2;
 
 const DEFAULT_SETTINGS = {
   sort: 'popular',
@@ -18,8 +21,9 @@ const DEFAULT_SETTINGS = {
   pageSize: 60,
   theme: 'auto',
   fontScale: 1,
-  openInNewTab: true,
+  openInNewTab: false,
   mutedSources: [],
+  schema: SETTINGS_SCHEMA,
 };
 
 const TAB_TITLES = {
@@ -51,9 +55,22 @@ function writeJson(key, value) {
   }
 }
 
+/**
+ * 保存済みの設定を今のスキーマに合わせる。
+ * schema 2: 記事は既定で同じタブに遷移する（以前は新しいタブだった）
+ */
+function migrateSettings(stored) {
+  const settings = { ...DEFAULT_SETTINGS, ...stored };
+  if ((stored.schema ?? 1) < 2) {
+    settings.openInNewTab = false;
+  }
+  settings.schema = SETTINGS_SCHEMA;
+  return settings;
+}
+
 const state = {
   tab: 'latest',
-  settings: { ...DEFAULT_SETTINGS, ...readJson(KEYS.settings, {}) },
+  settings: migrateSettings(readJson(KEYS.settings, {})),
   bookmarks: readJson(KEYS.bookmarks, []),
   read: new Set(readJson(KEYS.read, [])),
   sources: [],
@@ -77,6 +94,37 @@ function saveBookmarks() {
 
 function saveRead() {
   writeJson(KEYS.read, [...state.read].slice(-MAX_READ_HISTORY));
+}
+
+/**
+ * 同じタブで記事に遷移すると、戻ったときページは作り直される。
+ * どのタブをどこまで読んでいたかを覚えておいて、そこへ戻す。
+ */
+function saveNav() {
+  try {
+    sessionStorage.setItem(KEYS.nav, JSON.stringify({
+      tab: state.tab,
+      query: state.query,
+      sourceFilter: state.sourceFilter,
+      loaded: state.items.length,
+      scrollY: Math.round(window.scrollY),
+      savedAt: Date.now(),
+    }));
+  } catch {
+    // 保存できなくても遷移自体は妨げない。
+  }
+}
+
+function loadNav() {
+  let nav;
+  try {
+    nav = JSON.parse(sessionStorage.getItem(KEYS.nav) ?? 'null');
+  } catch {
+    return null;
+  }
+  // 30分以上前の位置まで復元すると、かえって古い一覧を見せてしまう。
+  if (!nav || Date.now() - (nav.savedAt ?? 0) > 30 * 60 * 1000) return null;
+  return nav;
 }
 
 /* ---------- 小物 ---------- */
@@ -151,11 +199,11 @@ async function loadSources() {
   state.sources = data.sources;
 }
 
-async function loadArticles({ append = false } = {}) {
+async function loadArticles({ append = false, limit = state.settings.pageSize } = {}) {
   const params = new URLSearchParams();
   const isSearch = state.tab === 'search';
   params.set('tab', isSearch ? 'latest' : state.settings.sort);
-  params.set('limit', String(state.settings.pageSize));
+  params.set('limit', String(limit));
   params.set('offset', String(append ? state.offset : 0));
   if (isSearch && state.query) params.set('q', state.query);
   if (!isSearch && state.settings.sort === 'popular') params.set('hours', String(state.settings.popularHours));
@@ -316,7 +364,7 @@ function renderSettings() {
       <span class="switch"><input id="set-thumbs" type="checkbox" data-setting="showThumbs" ${s.showThumbs ? 'checked' : ''}><span></span></span>
     </div>
     <div class="settings-row">
-      <label for="set-newtab">記事を新しいタブで開く</label>
+      <label for="set-newtab">記事を新しいタブで開く<span class="hint">オフなら同じタブで開き、戻ると元の位置に戻ります</span></label>
       <span class="switch"><input id="set-newtab" type="checkbox" data-setting="openInNewTab" ${s.openInNewTab ? 'checked' : ''}><span></span></span>
     </div>
     <div class="settings-row">
@@ -392,9 +440,14 @@ function openArticle(url) {
   const article = state.items.find((a) => a.url === url) ?? state.bookmarks.find((a) => a.url === url);
   state.read.add(url);
   saveRead();
-  if (state.settings.openInNewTab) window.open(url, '_blank', 'noopener');
-  else window.location.href = url;
-  render();
+  saveNav();
+  if (state.settings.openInNewTab) {
+    window.open(url, '_blank', 'noopener');
+    render();
+  } else {
+    // 同じタブで遷移する。既読の見た目は戻ってきたときに反映される。
+    window.location.assign(url);
+  }
   return article;
 }
 
@@ -578,8 +631,28 @@ view.addEventListener('input', (event) => {
 
 (async function start() {
   applyTheme();
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+  const nav = loadNav();
+  if (nav) {
+    state.tab = nav.tab ?? 'latest';
+    state.query = nav.query ?? '';
+    state.sourceFilter = nav.sourceFilter ?? '';
+  }
   render();
+
   await loadSources().catch(() => {});
-  await loadArticles();
+  if (state.tab !== 'bookmarks' && state.tab !== 'settings' && state.tab !== 'blogs') {
+    // 「もっと読む」で伸ばしていた分も含めて読み直す。
+    const wanted = Math.max(state.settings.pageSize, nav?.loaded ?? 0);
+    await loadArticles({ limit: Math.min(wanted, 200) });
+  }
   render();
+
+  if (nav?.scrollY) {
+    requestAnimationFrame(() => window.scrollTo(0, nav.scrollY));
+  }
 }());
+
+// 記事以外の離脱（ブックマークからの遷移、リロード）でも位置を残す。
+window.addEventListener('pagehide', saveNav);

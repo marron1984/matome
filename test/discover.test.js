@@ -4,7 +4,7 @@ import { createServer } from 'node:http';
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { feedLinksFromHtml, probeFeed, discoverFeed, verifySources } from '../src/discover.js';
+import { feedLinksFromHtml, probeFeed, discoverFeed, verifySources, resolveCandidates } from '../src/discover.js';
 import { loadSources, saveSources } from '../src/config.js';
 
 const FEED = `<?xml version="1.0" encoding="UTF-8"?>
@@ -137,4 +137,47 @@ test('設定ファイルが見つからない環境では、同梱コピーへ�
   const sources = await loadSources();
   assert.ok(sources.length >= 5, 'フォールバックでブログ一覧が取れる');
   assert.ok(sources.every((s) => s.id && s.feed));
+});
+
+test('resolveCandidates は読めた候補だけを購読エントリにする', async (t) => {
+  const { server, base } = await startSite({
+    '/alive/index.rdf': { type: 'application/xml', body: FEED },
+    '/moved/index.rdf': { type: 'application/xml', body: FEED },
+  });
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+
+  const result = await resolveCandidates([
+    { name: '生きているまとめ', urls: [`${base}/alive/index.rdf`] },
+    // 1つ目は死んでいて、2つ目（移転先）が生きているケース
+    { name: '移転したまとめ', urls: [`${base}/gone/index.rdf`, `${base}/moved/index.rdf`] },
+    { name: '消滅したまとめ', urls: [`${base}/nowhere/index.rdf`] },
+    { name: 'URLなし' },
+  ], { existing: [], category: '坂道' });
+
+  assert.deepEqual(result.added.map((e) => e.name), ['生きているまとめ', '移転したまとめ']);
+  assert.equal(result.added[1].feed, `${base}/moved/index.rdf`);
+  assert.ok(result.added.every((e) => e.category === '坂道'));
+  assert.equal(new Set(result.added.map((e) => e.id)).size, 2, 'idが重複しない');
+  assert.equal(result.failed.length, 2);
+});
+
+test('resolveCandidates は登録済みのブログを二重に追加しない', async (t) => {
+  const { server, base } = await startSite({ '/index.rdf': { type: 'application/xml', body: FEED } });
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+
+  const existing = [{ id: 'exists', name: '登録済み', feed: `${base}/index.rdf`, site: `${base}/` }];
+  const result = await resolveCandidates([{ name: '同じもの', urls: [`${base}/index.rdf`] }], { existing });
+
+  assert.equal(result.added.length, 0);
+  assert.equal(result.skipped.length, 1);
+});
+
+test('同梱の坂道候補リストは形式が正しい', async () => {
+  const raw = JSON.parse(await readFile(new URL('../config/candidates/sakamichi.json', import.meta.url), 'utf8'));
+  assert.ok(raw.candidates.length >= 5);
+  for (const candidate of raw.candidates) {
+    assert.ok(candidate.name, '名前がある');
+    assert.ok((candidate.urls ?? []).length > 0, `${candidate.name} にURLがある`);
+    assert.ok((candidate.urls ?? []).every((u) => /^https?:\/\//.test(u)), `${candidate.name} のURLが絶対URL`);
+  }
 });

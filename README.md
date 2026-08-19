@@ -26,7 +26,7 @@ node src/cli.js seed     # サンプル記事を投入（ネットワーク不�
 node src/cli.js verify   # 登録ブログのフィードが実在するか確認（要ネットワーク）
 node src/cli.js crawl    # 実際のまとめブログからRSSを取得（要ネットワーク）
 node src/cli.js serve    # http://localhost:3000 で起動（10分ごとに自動クロール）
-npm test                 # テスト（64件）
+npm test                 # テスト（67件）
 ```
 
 `npm start` / `npm run crawl` / `npm run seed` も同じです。
@@ -41,6 +41,7 @@ npm test                 # テスト（64件）
 | `sources` | 購読ブログ一覧と最終取得状況を表示 |
 | `verify [--prune]` | 全フィードが実在するか確認。`--prune` で読めないブログを設定から削除 |
 | `add <サイトURL> [--id] [--name] [--category]` | サイトURLからフィードを自動発見して購読に追加 |
+| `add --list <候補ファイル> [--category] [--dry-run]` | 候補リストをまとめて試し、読めたものだけ追加 |
 
 ### 環境変数
 
@@ -89,6 +90,31 @@ $ node src/cli.js add https://example.jp/ --category 総合
 探す順番は ①渡されたURLがそのままフィードか → ②HTMLの `<link rel="alternate">` → ③`/index.rdf` `/feed` `/rss` `/atom.xml` などの定番パス、です。
 どれも読めなければ追加せず、試したURLと理由を表示します。
 
+### 候補リストからまとめて追加する（乃木坂46・日向坂46など）
+
+ジャンルごとの候補を1ファイルにまとめておいて、一括で試せます。
+同梱の `config/candidates/sakamichi.json` には坂道グループ（乃木坂46・日向坂46）のまとめブログ候補が入っています。
+
+```bash
+node src/cli.js add --list config/candidates/sakamichi.json --dry-run   # 試すだけ
+node src/cli.js add --list config/candidates/sakamichi.json             # 読めたものを追加
+```
+
+```
+10件の候補を順に確認します…
+
+✓ 乃木坂46まとめ 1/46 — http://blog.livedoor.jp/nogizaka46_128/index.rdf（30件）
+✓ 日向坂46まとめもり〜 — https://hiraganakeyaki.blog.jp/index.rdf（25件）
+✗ 坂道グループまとめ — フィードが見つかりませんでした
+
+追加 2 / 登録済み 0 / 見つからず 1
+```
+
+- **実際にフィードが読めた候補だけ**が `config/sources.json` に入ります。URLが変わっていたり閉鎖していれば、追加されずに理由が出るだけです。
+- 1件につき複数のURL（移転前/移転後など）を `urls` に並べられます。先に読めたものが採用されます。
+- 既に登録済みのブログは二重に追加されません。何度実行しても安全です。
+- 候補ファイルは自分で作れます。形式は `{ "category": "坂道", "candidates": [{ "name": "...", "urls": ["..."] }] }` です。
+
 ### 直接編集する
 
 `config/sources.json` を編集しても構いません。RSS 2.0 / RSS 1.0(RDF) / Atom のいずれにも対応しています。
@@ -127,12 +153,16 @@ score = (log(1 + はてブ数) * 10 + 1) / (1 + 経過時間/8h)^1.4 * ブログ
 | ブログ | 購読ブログの一覧・記事数・取得エラー、スイッチで非表示、名前タップでそのブログだけ表示 |
 | 設定 | 既読を隠す／サムネイル／テーマ／文字サイズ／人気の集計期間／読み込み件数／NGワード |
 
+記事は**同じタブで開きます**。ブラウザの「戻る」で一覧に戻ると、開いていたタブ・検索語・読み込み済みの件数・スクロール位置まで元に戻ります
+（30分以内に限る）。新しいタブで開きたい場合は設定でオンにできます。
+
 既読・ブックマーク・設定はブラウザの `localStorage` にのみ保存され、サーバには送りません。
 
 ## 構成
 
 ```
 config/sources.json   購読ブログ定義
+config/candidates/    ジャンル別のブログ候補リスト（add --list で一括追加）
 src/xml.js            軽量XMLヘルパー（実体参照・CDATA・属性）
 src/feed.js           RSS2.0 / RDF / Atom → 共通フォーマット
 src/url.js            URL正規化（トラッキングパラメータ除去など）
