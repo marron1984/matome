@@ -1,0 +1,52 @@
+name: 購読ブログの更新（実在確認つき）
+
+# 手動実行専用。candidates の各URLを実際に取得し、
+# フィードとして読めたブログだけを config/sources.json に追加してコミットする。
+# 既存ブログの生死も verify で確認するが、削除はしない（ログ報告のみ）。
+on:
+  workflow_dispatch:
+    inputs:
+      candidates:
+        description: "候補ファイルのパス"
+        default: "config/candidates/sakamichi.json"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 既存ブログの生死を確認（報告のみ）
+        run: node src/cli.js verify || true
+
+      - name: 候補を試し、読めたものだけ追加
+        run: node src/cli.js add --list "${{ github.event.inputs.candidates }}"
+
+      - name: 設定が壊れていないか確認
+        run: |
+          node --input-type=module -e "
+            import { loadSources } from './src/config.js';
+            const s = await loadSources();
+            console.log('sources.json OK:', s.length, 'ブログ');
+          "
+          node --test test/discover.test.js
+
+      - name: 変更があればコミットしてプッシュ
+        run: |
+          if git diff --quiet config/sources.json; then
+            echo '追加されたブログはありませんでした。'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/sources.json
+          git commit -m '購読ブログを更新（GitHub Actions 上で実在確認済みのもののみ追加）'
+          git push
