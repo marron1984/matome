@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel rdf:about="http://blog.livedoor.jp/nwknews/">
+    <title>哲学ニュースnwk</title>
+    <link>http://blog.livedoor.jp/nwknews/</link>
+    <description>哲学ニュースnwkのサンプルフィード（オフラインデモ用）</description>
+  </channel>
+  <item rdf:about="http://blog.livedoor.jp/nwknews/archives/60001.html">
+    <title><![CDATA[【悲報】ワイの部屋、片付けても3日で元に戻る]]></title>
+    <link>http://blog.livedoor.jp/nwknews/archives/60001.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/nwknews/img/1.jpg" width="120"><br>【悲報】ワイの部屋、片付けても3日で元に……続きを読む]]></description>
+    <dc:date>{{-24m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/nwknews/archives/60002.html">
+    <title><![CDATA[【画像】少女漫画雑誌の歴史を歴代表紙で振り返る　懐かしすぎて泣ける]]></title>
+    <link>http://blog.livedoor.jp/nwknews/archives/60002.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/nwknews/img/2.jpg" width="120"><br>【画像】少女漫画雑誌の歴史を歴代表紙で振……続きを読む]]></description>
+    <dc:date>{{-63m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/nwknews/archives/60003.html">
+    <title><![CDATA[昭和の給食で一番うまかったメニューといえば？]]></title>
+    <link>http://blog.livedoor.jp/nwknews/archives/60003.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/nwknews/img/3.jpg" width="120"><br>昭和の給食で一番うまかったメニューといえ……続きを読む]]></description>
+    <dc:date>{{-180m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/nwknews/archives/60004.html">
+    <title><![CDATA[宇宙の果てってどうなってるんや？教えてくれ]]></title>
+    <link>http://blog.livedoor.jp/nwknews/archives/60004.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/nwknews/img/4.jpg" width="120"><br>宇宙の果てってどうなってるんや？教えてく……続きを読む]]></description>
+    <dc:date>{{-260m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/nwknews/archives/60005.html">
+    <title><![CDATA[【朗報】読書習慣、1日10分でも効果があると判明]]></title>
+    <link>http://blog.livedoor.jp/nwknews/archives/60005.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/nwknews/img/5.jpg" width="120"><br>【朗報】読書習慣、1日10分でも効果があ……続きを読む]]></description>
+    <dc:date>{{-400m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+</rdf:RDF>

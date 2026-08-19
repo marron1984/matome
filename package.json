@@ -1,0 +1,17 @@
+{
+  "name": "matome",
+  "version": "0.1.0",
+  "private": true,
+  "description": "まとめサイトのまとめサイト — 2ch系まとめブログのRSSを集約して新着/人気順に読むアプリ",
+  "type": "module",
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "scripts": {
+    "start": "node src/cli.js serve",
+    "crawl": "node src/cli.js crawl",
+    "seed": "node src/cli.js seed",
+    "sources": "node src/cli.js sources",
+    "test": "node --test test/*.test.js"
+  }
+}

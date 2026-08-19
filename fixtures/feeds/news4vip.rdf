@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel rdf:about="http://blog.livedoor.jp/news4vip/">
+    <title>VIPPERな俺</title>
+    <link>http://blog.livedoor.jp/news4vip/</link>
+    <description>VIPPERな俺のサンプルフィード（オフラインデモ用）</description>
+  </channel>
+  <item rdf:about="http://blog.livedoor.jp/news4vip/archives/60001.html">
+    <title><![CDATA[太陽光パネルって日本の気候に合ってるん？詳しいやつ来てくれ]]></title>
+    <link>http://blog.livedoor.jp/news4vip/archives/60001.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/news4vip/img/1.jpg" width="120"><br>太陽光パネルって日本の気候に合ってるん？……続きを読む]]></description>
+    <dc:date>{{-54m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/news4vip/archives/60002.html">
+    <title><![CDATA[ワイ、深夜のコンビニでバイトしてるけど質問ある？]]></title>
+    <link>http://blog.livedoor.jp/news4vip/archives/60002.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/news4vip/img/2.jpg" width="120"><br>ワイ、深夜のコンビニでバイトしてるけど質……続きを読む]]></description>
+    <dc:date>{{-160m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/news4vip/archives/60003.html">
+    <title><![CDATA[【急募】休日を有意義に過ごす方法]]></title>
+    <link>http://blog.livedoor.jp/news4vip/archives/60003.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/news4vip/img/3.jpg" width="120"><br>【急募】休日を有意義に過ごす方法……続きを読む]]></description>
+    <dc:date>{{-280m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/news4vip/archives/60004.html">
+    <title><![CDATA[ラーメン屋で替え玉頼むタイミングが分からん]]></title>
+    <link>http://blog.livedoor.jp/news4vip/archives/60004.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/news4vip/img/4.jpg" width="120"><br>ラーメン屋で替え玉頼むタイミングが分から……続きを読む]]></description>
+    <dc:date>{{-520m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+</rdf:RDF>

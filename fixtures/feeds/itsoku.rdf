@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel rdf:about="http://blog.livedoor.jp/itsoku/">
+    <title>IT速報</title>
+    <link>http://blog.livedoor.jp/itsoku/</link>
+    <description>IT速報のサンプルフィード（オフラインデモ用）</description>
+  </channel>
+  <item rdf:about="http://blog.livedoor.jp/itsoku/archives/60001.html">
+    <title><![CDATA[【悲報】新作ドラマ、2期になってつまらなくなった理由www]]></title>
+    <link>http://blog.livedoor.jp/itsoku/archives/60001.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/itsoku/img/1.jpg" width="120"><br>【悲報】新作ドラマ、2期になってつまらな……続きを読む]]></description>
+    <dc:date>{{-44m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/itsoku/archives/60002.html">
+    <title><![CDATA[エンジニアの平均年収、ついに公表される]]></title>
+    <link>http://blog.livedoor.jp/itsoku/archives/60002.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/itsoku/img/2.jpg" width="120"><br>エンジニアの平均年収、ついに公表される……続きを読む]]></description>
+    <dc:date>{{-130m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/itsoku/archives/60003.html">
+    <title><![CDATA[【朗報】格安SIM、また値下げ競争が始まる模様]]></title>
+    <link>http://blog.livedoor.jp/itsoku/archives/60003.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/itsoku/img/3.jpg" width="120"><br>【朗報】格安SIM、また値下げ競争が始ま……続きを読む]]></description>
+    <dc:date>{{-240m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/itsoku/archives/60004.html">
+    <title><![CDATA[プログラミング初心者が最初に挫折するポイントがこちら]]></title>
+    <link>http://blog.livedoor.jp/itsoku/archives/60004.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/itsoku/img/4.jpg" width="120"><br>プログラミング初心者が最初に挫折するポイ……続きを読む]]></description>
+    <dc:date>{{-350m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/itsoku/archives/60005.html">
+    <title><![CDATA[スマホの充電、100%まで入れる派？80%で止める派？]]></title>
+    <link>http://blog.livedoor.jp/itsoku/archives/60005.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/itsoku/img/5.jpg" width="120"><br>スマホの充電、100%まで入れる派？80……続きを読む]]></description>
+    <dc:date>{{-500m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+</rdf:RDF>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel rdf:about="http://hamusoku.com/">
+    <title>ハムスター速報</title>
+    <link>http://hamusoku.com/</link>
+    <description>ハムスター速報のサンプルフィード（オフラインデモ用）</description>
+  </channel>
+  <item rdf:about="http://hamusoku.com/archives/60001.html">
+    <title><![CDATA[【動画】保護された子猫、1ヶ月でこんなに大きくなる]]></title>
+    <link>http://hamusoku.com/archives/60001.html</link>
+    <description><![CDATA[<img src="http://hamusoku.com/img/1.jpg" width="120"><br>【動画】保護された子猫、1ヶ月でこんなに……続きを読む]]></description>
+    <dc:date>{{-70m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://hamusoku.com/archives/60002.html">
+    <title><![CDATA[今年の夏、猛暑日の日数が過去最多になる見込み]]></title>
+    <link>http://hamusoku.com/archives/60002.html</link>
+    <description><![CDATA[<img src="http://hamusoku.com/img/2.jpg" width="120"><br>今年の夏、猛暑日の日数が過去最多になる見……続きを読む]]></description>
+    <dc:date>{{-200m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://hamusoku.com/archives/60003.html">
+    <title><![CDATA[【画像】この間取り、どう見ても罠だろ]]></title>
+    <link>http://hamusoku.com/archives/60003.html</link>
+    <description><![CDATA[<img src="http://hamusoku.com/img/3.jpg" width="120"><br>【画像】この間取り、どう見ても罠だろ……続きを読む]]></description>
+    <dc:date>{{-380m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+</rdf:RDF>

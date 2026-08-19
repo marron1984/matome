@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel rdf:about="http://blog.livedoor.jp/dqnplus/">
+    <title>痛いニュース(ﾉ∀`)</title>
+    <link>http://blog.livedoor.jp/dqnplus/</link>
+    <description>痛いニュース(ﾉ∀`)のサンプルフィード（オフラインデモ用）</description>
+  </channel>
+  <item rdf:about="http://blog.livedoor.jp/dqnplus/archives/60001.html">
+    <title><![CDATA[「回転焼きのつぶあんが気にくわない」など6日間で159回役所に電話　偽計業務妨害容疑で56歳男逮捕]]></title>
+    <link>http://blog.livedoor.jp/dqnplus/archives/60001.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/dqnplus/img/1.jpg" width="120"><br>「回転焼きのつぶあんが気にくわない」など……続きを読む]]></description>
+    <dc:date>{{-33m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/dqnplus/archives/60002.html">
+    <title><![CDATA[コンビニの新作スイーツ、値段が上がりすぎて誰も買わなくなる]]></title>
+    <link>http://blog.livedoor.jp/dqnplus/archives/60002.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/dqnplus/img/2.jpg" width="120"><br>コンビニの新作スイーツ、値段が上がりすぎ……続きを読む]]></description>
+    <dc:date>{{-96m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/dqnplus/archives/60003.html">
+    <title><![CDATA[【朗報】自販機の当たり付き、まだ生き残っていた]]></title>
+    <link>http://blog.livedoor.jp/dqnplus/archives/60003.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/dqnplus/img/3.jpg" width="120"><br>【朗報】自販機の当たり付き、まだ生き残っ……続きを読む]]></description>
+    <dc:date>{{-210m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/dqnplus/archives/60004.html">
+    <title><![CDATA[大学生の一人暮らし、家賃の平均が過去最高を更新]]></title>
+    <link>http://blog.livedoor.jp/dqnplus/archives/60004.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/dqnplus/img/4.jpg" width="120"><br>大学生の一人暮らし、家賃の平均が過去最高……続きを読む]]></description>
+    <dc:date>{{-320m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://blog.livedoor.jp/dqnplus/archives/60005.html">
+    <title><![CDATA[駅の伝言板、令和にひっそり復活していた]]></title>
+    <link>http://blog.livedoor.jp/dqnplus/archives/60005.html</link>
+    <description><![CDATA[<img src="http://blog.livedoor.jp/dqnplus/img/5.jpg" width="120"><br>駅の伝言板、令和にひっそり復活していた……続きを読む]]></description>
+    <dc:date>{{-470m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+</rdf:RDF>

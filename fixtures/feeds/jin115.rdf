@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel rdf:about="http://jin115.com/">
+    <title>オレ的ゲーム速報＠刃</title>
+    <link>http://jin115.com/</link>
+    <description>オレ的ゲーム速報＠刃のサンプルフィード（オフラインデモ用）</description>
+  </channel>
+  <item rdf:about="http://jin115.com/archives/60001.html">
+    <title><![CDATA[人気RPGの新作、発売日が発表される]]></title>
+    <link>http://jin115.com/archives/60001.html</link>
+    <description><![CDATA[<img src="http://jin115.com/img/1.jpg" width="120"><br>人気RPGの新作、発売日が発表される……続きを読む]]></description>
+    <dc:date>{{-38m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://jin115.com/archives/60002.html">
+    <title><![CDATA[【朗報】名作アクションのリマスター版、追加要素が明らかに]]></title>
+    <link>http://jin115.com/archives/60002.html</link>
+    <description><![CDATA[<img src="http://jin115.com/img/2.jpg" width="120"><br>【朗報】名作アクションのリマスター版、追……続きを読む]]></description>
+    <dc:date>{{-220m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+  <item rdf:about="http://jin115.com/archives/60003.html">
+    <title><![CDATA[ゲームのロード時間、何秒までなら許せる？]]></title>
+    <link>http://jin115.com/archives/60003.html</link>
+    <description><![CDATA[<img src="http://jin115.com/img/3.jpg" width="120"><br>ゲームのロード時間、何秒までなら許せる？……続きを読む]]></description>
+    <dc:date>{{-460m}}</dc:date>
+    <dc:subject>まとめ</dc:subject>
+  </item>
+</rdf:RDF>

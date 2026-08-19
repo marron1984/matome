@@ -1,0 +1,20 @@
+{
+  "$comment": "購読するまとめブログ一覧。feed は RSS2.0 / RSS1.0(RDF) / Atom のいずれでも可。weight は人気スコアの補正係数。",
+  "sources": [
+    { "id": "dqnplus",  "name": "痛いニュース(ﾉ∀`)",   "category": "ニュース", "site": "http://blog.livedoor.jp/dqnplus/",   "feed": "http://blog.livedoor.jp/dqnplus/index.rdf",   "weight": 1 },
+    { "id": "nwknews",  "name": "哲学ニュースnwk",       "category": "総合",     "site": "http://blog.livedoor.jp/nwknews/",   "feed": "http://blog.livedoor.jp/nwknews/index.rdf",   "weight": 1 },
+    { "id": "itsoku",   "name": "IT速報",                "category": "IT",       "site": "http://blog.livedoor.jp/itsoku/",    "feed": "http://blog.livedoor.jp/itsoku/index.rdf",    "weight": 1 },
+    { "id": "news4vip", "name": "VIPPERな俺",            "category": "総合",     "site": "http://blog.livedoor.jp/news4vip/",  "feed": "http://blog.livedoor.jp/news4vip/index.rdf",  "weight": 1 },
+    { "id": "fesoku",   "name": "ふぇー速",              "category": "総合",     "site": "https://fesoku.net/",                "feed": "https://fesoku.net/feed",                     "weight": 1 },
+    { "id": "hamusoku", "name": "ハムスター速報",        "category": "ニュース", "site": "http://hamusoku.com/",               "feed": "http://hamusoku.com/index.rdf",               "weight": 1 },
+    { "id": "himasoku", "name": "暇人\\(^o^)/速報",      "category": "総合",     "site": "http://himasoku.com/",               "feed": "http://himasoku.com/index.rdf",               "weight": 1 },
+    { "id": "alfalfa",  "name": "アルファルファモザイク","category": "総合",     "site": "https://alfalfalfa.com/",            "feed": "https://alfalfalfa.com/index.rdf",            "weight": 1 },
+    { "id": "kinisoku", "name": "キニ速",                "category": "総合",     "site": "http://blog.livedoor.jp/kinisoku/",  "feed": "http://blog.livedoor.jp/kinisoku/index.rdf",  "weight": 1 },
+    { "id": "jin115",   "name": "オレ的ゲーム速報＠刃",  "category": "ゲーム",   "site": "http://jin115.com/",                 "feed": "http://jin115.com/index.rdf",                 "weight": 0.8 },
+    { "id": "esuteru",  "name": "はちま起稿",            "category": "ゲーム",   "site": "http://blog.esuteru.com/",           "feed": "http://blog.esuteru.com/index.rdf",           "weight": 0.8 },
+    { "id": "nanjstu",  "name": "なんJ PRIDE",           "category": "なんJ",    "site": "http://blog.livedoor.jp/nanjstu/",   "feed": "http://blog.livedoor.jp/nanjstu/index.rdf",   "weight": 1 },
+    { "id": "hosyusokuhou", "name": "保守速報",          "category": "ニュース", "site": "https://hosyusokuhou.jp/",           "feed": "https://hosyusokuhou.jp/index.rdf",           "weight": 0.7 },
+    { "id": "kijoromame",   "name": "鬼女まとめ",        "category": "生活",     "site": "http://blog.livedoor.jp/kijolife/",  "feed": "http://blog.livedoor.jp/kijolife/index.rdf",  "weight": 1 },
+    { "id": "burusoku",     "name": "ブルーレイ速報",    "category": "総合",     "site": "http://blog.livedoor.jp/bluejay01-review/", "feed": "http://blog.livedoor.jp/bluejay01-review/index.rdf", "weight": 1 }
+  ]
+}
