@@ -406,3 +406,84 @@ body {
   body { max-width: 680px; margin: 0 auto; border-inline: 1px solid var(--separator); }
   .tabbar { max-width: 680px; margin: 0 auto; }
 }
+
+/* ---------- リーダーモード ---------- */
+body.reader-open { overflow: hidden; }
+
+.reader {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--bg);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.reader-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  padding-top: calc(8px + env(safe-area-inset-top));
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid var(--separator);
+}
+
+.reader-back {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 24px;
+  line-height: 1;
+  padding: 6px 10px 8px 0;
+  cursor: pointer;
+}
+
+.reader-source { flex: 1; font-size: calc(13px * var(--font-scale)); color: var(--text-dim); }
+.reader-origin { color: var(--accent); font-size: calc(14px * var(--font-scale)); text-decoration: none; }
+
+.reader-body {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 16px calc(48px + env(safe-area-inset-bottom));
+}
+
+.reader-loading { color: var(--text-dim); text-align: center; padding: 48px 0; }
+
+.reader-title {
+  margin: 4px 0 8px;
+  font-size: calc(21px * var(--font-scale));
+  line-height: 1.4;
+}
+
+.reader-meta { margin: 0 0 20px; color: var(--text-dim); font-size: calc(13px * var(--font-scale)); }
+
+.reader-content { font-size: calc(16px * var(--font-scale)); line-height: 1.8; word-break: break-word; }
+.reader-content p { margin: 0 0 0.9em; }
+.reader-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 8px 0;
+  background: var(--bg-elevated);
+}
+.reader-content a { color: var(--accent); }
+.reader-content blockquote {
+  margin: 12px 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--accent);
+  background: var(--bg-elevated);
+  border-radius: 0 8px 8px 0;
+  color: var(--text);
+}
+.reader-content table { max-width: 100%; overflow-x: auto; display: block; border-collapse: collapse; }
+.reader-content td, .reader-content th { border: 1px solid var(--separator); padding: 4px 8px; }
+.reader-content pre { overflow-x: auto; background: var(--bg-elevated); padding: 10px; border-radius: 8px; }
+
+.reader-foot { margin-top: 28px; text-align: center; }
+.reader-foot a { color: var(--accent); text-decoration: none; font-weight: 600; }

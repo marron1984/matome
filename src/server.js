@@ -5,6 +5,9 @@ import { extname, join, normalize } from 'node:path';
 import { paths } from './config.js';
 import { selectArticles } from './rank.js';
 import { crawl } from './crawler.js';
+import { extractArticle } from './extract.js';
+import { fetchText } from './http.js';
+import { canonicalizeUrl } from './url.js';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -61,6 +64,10 @@ export function createRequestHandler({ store, sources, onCrawl, serveStatic = tr
   const sourceById = new Map(sources.map((s) => [s.id, s]));
   const weights = Object.fromEntries(sources.map((s) => [s.id, s.weight ?? 1]));
   let crawling = null;
+  // リーダーモードの抽出結果キャッシュ（URL→結果）。30分・100件まで。
+  const readerCache = new Map();
+  const READER_TTL = 30 * 60 * 1000;
+  const READER_CACHE_MAX = 100;
 
   function decorate(article) {
     const source = sourceById.get(article.sourceId);
@@ -107,6 +114,42 @@ export function createRequestHandler({ store, sources, onCrawl, serveStatic = tr
           ...(store.sources[source.id] ?? {}),
         })),
       });
+    }
+
+    if (req.method === 'GET' && pathname === '/api/extract') {
+      // SSRF対策: ストアに存在する記事URLしか取りに行かない。
+      const target = canonicalizeUrl(searchParams.get('url') ?? '');
+      const article = store.articles.find((a) => a.url === target);
+      if (!article) {
+        return sendJson(res, 404, { error: '購読中の記事ではありません' });
+      }
+      const cached = readerCache.get(target);
+      if (cached && Date.now() - cached.at < READER_TTL) {
+        return sendJson(res, 200, cached.data);
+      }
+      try {
+        const page = await fetchText(target, { timeoutMs: 12000, retries: 1 });
+        const extracted = extractArticle(page.body, { url: page.url });
+        if (extracted.length < 100) {
+          // 本文がほとんど取れないページは無理に見せない（フロントは元ページへ誘導）
+          return sendJson(res, 422, { error: '本文を抽出できませんでした' });
+        }
+        const data = {
+          url: target,
+          title: extracted.title || article.title,
+          html: extracted.html,
+          sourceName: article.sourceName,
+          publishedAt: article.publishedAt,
+          bookmarks: article.bookmarks,
+        };
+        readerCache.set(target, { at: Date.now(), data });
+        if (readerCache.size > READER_CACHE_MAX) {
+          readerCache.delete(readerCache.keys().next().value);
+        }
+        return sendJson(res, 200, data);
+      } catch (error) {
+        return sendJson(res, 502, { error: `記事を取得できませんでした: ${error?.message ?? error}` });
+      }
     }
 
     if (req.method === 'GET' && pathname === '/api/status') {

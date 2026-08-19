@@ -10,7 +10,7 @@ const KEYS = {
   nav: 'matome.nav.v1',
 };
 
-const SETTINGS_SCHEMA = 2;
+const SETTINGS_SCHEMA = 3;
 
 const DEFAULT_SETTINGS = {
   sort: 'popular',
@@ -22,6 +22,7 @@ const DEFAULT_SETTINGS = {
   theme: 'auto',
   fontScale: 1,
   openInNewTab: false,
+  readerMode: true,
   mutedSources: [],
   schema: SETTINGS_SCHEMA,
 };
@@ -63,6 +64,9 @@ function migrateSettings(stored) {
   const settings = { ...DEFAULT_SETTINGS, ...stored };
   if ((stored.schema ?? 1) < 2) {
     settings.openInNewTab = false;
+  }
+  if ((stored.schema ?? 1) < 3) {
+    settings.readerMode = true; // schema 3: 広告を除去したリーダー表示を既定に
   }
   settings.schema = SETTINGS_SCHEMA;
   return settings;
@@ -356,6 +360,10 @@ function renderSettings() {
   view.innerHTML = `
     <h2 class="section-title">表示</h2>
     <div class="settings-row">
+      <label for="set-reader">広告を隠して読む（リーダーモード）<span class="hint">記事の本文だけを抽出してアプリ内に表示します。広告・アフィリエイトは除去されます</span></label>
+      <span class="switch"><input id="set-reader" type="checkbox" data-setting="readerMode" ${s.readerMode ? 'checked' : ''}><span></span></span>
+    </div>
+    <div class="settings-row">
       <label for="set-hide-read">既読を隠す<span class="hint">開いた記事を一覧から消します</span></label>
       <span class="switch"><input id="set-hide-read" type="checkbox" data-setting="hideRead" ${s.hideRead ? 'checked' : ''}><span></span></span>
     </div>
@@ -364,7 +372,7 @@ function renderSettings() {
       <span class="switch"><input id="set-thumbs" type="checkbox" data-setting="showThumbs" ${s.showThumbs ? 'checked' : ''}><span></span></span>
     </div>
     <div class="settings-row">
-      <label for="set-newtab">記事を新しいタブで開く<span class="hint">オフなら同じタブで開き、戻ると元の位置に戻ります</span></label>
+      <label for="set-newtab">記事を新しいタブで開く<span class="hint">リーダーモードがオフのときの動き。オフなら同じタブで開きます</span></label>
       <span class="switch"><input id="set-newtab" type="checkbox" data-setting="openInNewTab" ${s.openInNewTab ? 'checked' : ''}><span></span></span>
     </div>
     <div class="settings-row">
@@ -441,7 +449,10 @@ function openArticle(url) {
   state.read.add(url);
   saveRead();
   saveNav();
-  if (state.settings.openInNewTab) {
+  if (state.settings.readerMode) {
+    openReader(url, article);
+    render();
+  } else if (state.settings.openInNewTab) {
     window.open(url, '_blank', 'noopener');
     render();
   } else {
@@ -450,6 +461,78 @@ function openArticle(url) {
   }
   return article;
 }
+
+/* ---------- リーダーモード（広告を除去したアプリ内表示） ---------- */
+
+function readerEl() {
+  return document.getElementById('reader');
+}
+
+function closeReader({ fromPopstate = false } = {}) {
+  const node = readerEl();
+  if (!node) return;
+  node.remove();
+  document.body.classList.remove('reader-open');
+  if (!fromPopstate && history.state?.reader) history.back();
+}
+
+async function openReader(url, article) {
+  closeReader({ fromPopstate: true });
+  history.pushState({ reader: url }, '', location.href); // 端末の「戻る」で閉じられるように
+
+  const overlay = document.createElement('div');
+  overlay.id = 'reader';
+  overlay.className = 'reader';
+  overlay.innerHTML = `
+    <header class="reader-header">
+      <button type="button" class="reader-back" data-reader="close" aria-label="一覧に戻る">←</button>
+      <span class="reader-source">${escapeHtml(article?.sourceName ?? '')}</span>
+      <a class="reader-origin" href="${escapeHtml(url)}" target="_blank" rel="noopener">元記事</a>
+    </header>
+    <div class="reader-body"><p class="reader-loading">広告を除去して読み込み中…</p></div>`;
+  document.body.appendChild(overlay);
+  document.body.classList.add('reader-open');
+  overlay.scrollTop = 0;
+
+  const body = overlay.querySelector('.reader-body');
+  try {
+    const res = await fetch(`/api/extract?url=${encodeURIComponent(url)}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    if (!readerEl()) return; // 読み込み中に閉じられた
+    body.innerHTML = `
+      <h1 class="reader-title">${escapeHtml(data.title)}</h1>
+      <p class="reader-meta">
+        ${escapeHtml(data.sourceName ?? '')} ・ ${escapeHtml(formatTime(data.publishedAt))}
+        ${data.bookmarks > 0 ? ` ・ <span class="badge">${data.bookmarks} users</span>` : ''}
+      </p>
+      <div class="reader-content">${data.html}</div>
+      <p class="reader-foot"><a href="${escapeHtml(url)}" target="_blank" rel="noopener">元のページで続きを読む →</a></p>`;
+  } catch (error) {
+    if (!readerEl()) return;
+    body.innerHTML = `
+      <p class="empty">本文を取り出せませんでした。<br>（${escapeHtml(error.message)}）</p>
+      <div class="settings-actions">
+        <button type="button" data-reader="open-origin">元のページを開く</button>
+        <button type="button" data-reader="close">一覧に戻る</button>
+      </div>`;
+    overlay.dataset.url = url;
+  }
+}
+
+document.addEventListener('click', (event) => {
+  const control = event.target.closest('[data-reader]');
+  if (!control) return;
+  if (control.dataset.reader === 'close') closeReader();
+  if (control.dataset.reader === 'open-origin') {
+    const url = control.closest('.reader')?.dataset.url;
+    if (url) window.open(url, '_blank', 'noopener');
+  }
+});
+
+window.addEventListener('popstate', () => {
+  if (readerEl()) closeReader({ fromPopstate: true });
+});
 
 function toggleBookmark(url) {
   const index = state.bookmarks.findIndex((b) => b.url === url);

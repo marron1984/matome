@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createServer } from 'node:http';
 import { Store } from '../src/store.js';
 import { createApp } from '../src/server.js';
 
@@ -108,5 +109,51 @@ test('APIと静的ファイルの配信', async (t) => {
     const res = await fetch(`${base}/../package.json`);
     const body = await res.text();
     assert.ok(!body.includes('"scripts"'), 'package.json が漏れている');
+  });
+});
+
+test('GET /api/extract はリーダー用の本文を返す', async (t) => {
+  // 広告まみれの記事ページを配る「まとめブログ」役のサーバ
+  const origin = createServer((req, res) => {
+    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+    res.end(`<html><head><title>抽出テスト記事 : テスト速報</title></head><body>
+      <div class="article-body">
+        <p>1: 名無しさん 本文です。今日のスレはここから始まった。</p>
+        <p>2: 名無しさん それは知らなかったわ。詳しく教えてくれると助かる。</p>
+        <p>3: 名無しさん ソースはこれ。まあ読んでみてくれとしか言えない。</p>
+        <blockquote><p>引用: 元スレで話題になっていた発言の内容がここに入る。</p></blockquote>
+        <script>ad()</script>
+        <div class="ad-rect"><a href="https://amzn.to/x">広告リンク</a></div>
+        <p><a href="https://amzn.to/y">アフィ商品</a>と<a href="http://example.com/ok">普通のリンク</a></p>
+      </div></body></html>`);
+  });
+  await new Promise((resolve) => origin.listen(0, resolve));
+  t.after(() => new Promise((resolve) => origin.close(resolve)));
+  const articleUrl = `http://127.0.0.1:${origin.address().port}/archives/1.html`;
+
+  const store = new Store('/dev/null');
+  store.upsertArticles([
+    { url: articleUrl, title: '抽出テスト記事', sourceId: 's1', sourceName: 'テスト速報', publishedAt: NOW },
+  ], { now: NOW });
+  const server = createApp({ store, sources: SOURCES, onCrawl: async () => ({}) });
+  await new Promise((resolve) => server.listen(0, resolve));
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  const base = `http://127.0.0.1:${server.address().port}`;
+
+  await t.test('本文は残り、広告・アフィリエイトは消える', async () => {
+    const res = await fetch(`${base}/api/extract?url=${encodeURIComponent(articleUrl)}`);
+    assert.equal(res.status, 200);
+    const json = await res.json();
+    assert.equal(json.title, '抽出テスト記事');
+    assert.match(json.html, /本文です/);
+    assert.match(json.html, /普通のリンク/);
+    assert.match(json.html, /アフィ商品/, 'リンクは外れてもテキストは残る');
+    assert.doesNotMatch(json.html, /amzn\.to|広告リンク|ad\(\)/);
+    assert.equal(json.sourceName, 'テスト速報');
+  });
+
+  await t.test('ストアに無いURLはSSRF対策で拒否する', async () => {
+    const res = await fetch(`${base}/api/extract?url=${encodeURIComponent('http://169.254.169.254/latest/meta-data')}`);
+    assert.equal(res.status, 404);
   });
 });
