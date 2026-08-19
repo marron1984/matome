@@ -1,0 +1,54 @@
+{
+  "$comment": "ポーカー・葉巻のまとめブログ候補。専門のまとめサイトは検索では見つからなかったため、まとめブログで一般的なURLパターンを機械的に確認する。実際にフィードが読めたものだけが購読に追加される。",
+  "candidates": [
+    {
+      "name": "ポーカー速報（候補）",
+      "category": "ポーカー",
+      "urls": [
+        "https://pokersoku.blog.jp/",
+        "http://blog.livedoor.jp/pokersoku/"
+      ]
+    },
+    {
+      "name": "ポーカーまとめ（候補）",
+      "category": "ポーカー",
+      "urls": [
+        "https://poker-matome.blog.jp/",
+        "http://blog.livedoor.jp/poker_matome/"
+      ]
+    },
+    {
+      "name": "ホールデム速報（候補）",
+      "category": "ポーカー",
+      "urls": [
+        "https://holdemsoku.blog.jp/",
+        "http://blog.livedoor.jp/holdemsoku/"
+      ]
+    },
+    {
+      "name": "ポカチェまとめ（候補）",
+      "category": "ポーカー",
+      "urls": [
+        "https://pokerchase-matome.blog.jp/",
+        "http://blog.livedoor.jp/pokerchase/"
+      ]
+    },
+    {
+      "name": "葉巻速報（候補）",
+      "category": "葉巻",
+      "urls": [
+        "https://cigarsoku.blog.jp/",
+        "http://blog.livedoor.jp/cigarsoku/"
+      ]
+    },
+    {
+      "name": "葉巻まとめ（候補）",
+      "category": "葉巻",
+      "urls": [
+        "https://hamaki-matome.blog.jp/",
+        "http://blog.livedoor.jp/hamakimatome/",
+        "https://cigar-matome.blog.jp/"
+      ]
+    }
+  ]
+}

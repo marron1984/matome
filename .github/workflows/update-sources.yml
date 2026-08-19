@@ -35,7 +35,16 @@ jobs:
         run: node src/cli.js verify || true
 
       - name: 候補を試し、読めたものだけ追加
-        run: node src/cli.js add --list "${{ github.event.inputs.candidates || 'config/candidates/sakamichi.json' }}"
+        run: |
+          if [ -n "${{ github.event.inputs.candidates }}" ]; then
+            node src/cli.js add --list "${{ github.event.inputs.candidates }}"
+          else
+            # push起動時は候補ファイルをすべて試す（登録済みはスキップされる）
+            for f in config/candidates/*.json; do
+              echo "===== $f"
+              node src/cli.js add --list "$f"
+            done
+          fi
 
       - name: 設定が壊れていないか確認
         run: |
